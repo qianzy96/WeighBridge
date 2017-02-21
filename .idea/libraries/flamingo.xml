@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="flamingo">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Documents/Flamingo/trunk/www/webstart/flamingo.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
