@@ -61,28 +61,27 @@ public class WeighBridge extends Components
         JButton secondWeightTile = createTile("Second Weight", "", 4);
         secondWeightTile.addActionListener(x -> selectSecondWeight());
         aPanel.add(secondWeightTile);
-        JButton calculatorTile = createTile("Calculator", "", 4);
-        calculatorTile.addActionListener(x ->
+        JButton logOnTile = createTile("Log On", "", 4);
+        logOnTile.addActionListener(x ->
+        {
+            SwingUtilities.invokeLater(() ->
+            {
+                LogOn logOn = new LogOn();
+                logOn.createLogOnDialogBox();
+                frame.dispose();
+            });
+        });
+        aPanel.add(logOnTile);
+        JButton registrationTile = createTile("Registration", "", 4);
+        registrationTile.addActionListener(x ->
         {
             SwingUtilities.invokeLater(() ->
             {
                 Calculator aCalculator = new Calculator();
-                aCalculator.createCalculatorDialogBox();
                 frame.dispose();
             });
         });
-        aPanel.add(calculatorTile);
-        JButton administratorLogOnTile = createTile("Administrator Log On", "", 4);
-        administratorLogOnTile.addActionListener(x ->
-        {
-            SwingUtilities.invokeLater(() ->
-            {
-                AdministratorLogOn anAdministratorLogOn = new AdministratorLogOn();
-                anAdministratorLogOn.createLogOnDialogBox();
-                frame.dispose();
-            });
-        });
-        aPanel.add(administratorLogOnTile);
+        aPanel.add(registrationTile);
         addComponent(aPanel);
     }
     public void selectWeightDocketType()

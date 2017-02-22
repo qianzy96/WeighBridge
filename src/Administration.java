@@ -42,10 +42,7 @@ public class Administration extends Components
     }
     public void createRibbon()
     {
-        frame = new JRibbonFrame();
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setTitle("Administration Portal");
+        frame = createRibbonFrame("Administration Portal");
         createReportsTaskOnRibbon();
         createSpecifiedTaskOnRibbon();
         createTaskOnRibbon("Driver", "Drivers", "drivers");
@@ -60,7 +57,7 @@ public class Administration extends Components
         createTaskOnRibbon("Setting", "Settings", "settings");
         frame.getRibbon().setApplicationMenu(createApplicationMenu());
         frame.setVisible(true);
-        createDashboard();
+        //createDashboard();
         //frame.add(ribbon, BorderLayout.NORTH);
     }
     protected RibbonApplicationMenu createApplicationMenu()
@@ -96,7 +93,6 @@ public class Administration extends Components
     }
     private void createDashboard()
     {
-        StringBuilder webPageContent = new StringBuilder();
         try
         {
             RetrieveContent noggersPage = new RetrieveContent("http://www.noggersblog.co.uk/prices/marketinfo/index2.htm");
@@ -107,7 +103,7 @@ public class Administration extends Components
             if(links.size() > 5)
                 for(int index = 0; index < 5; index++)
                     links.remove(links.size() - 1);
-            JPanel dashboardPanel = new JPanel(new GridLayout(0, 5));
+            JPanel dashboardPanel = new JPanel(new GridLayout(4, 4));
             links.forEach(x ->
             {
                 RetrieveContent aPage = new RetrieveContent(x);
@@ -119,46 +115,66 @@ public class Administration extends Components
                 for(int counter = 7; counter < pageContents.size(); counter = counter + 5)
                 {
                     aCommodityPrices.addPrices(pageContents.get(counter), new ArrayList<>(Arrays.asList(pageContents.get(counter + 1), pageContents.get(counter + 2),
-                    pageContents.get(counter + 3), pageContents.get(counter + 4))));
+                            pageContents.get(counter + 3), pageContents.get(counter + 4))));
                 }
                 System.out.println(aCommodityPrices.toString());
-                JButton aCommodityTile = createTile(aCommodityPrices.getCommodityTitle() + " " + aCommodityPrices.getDate(), "", links.size());
-                aCommodityTile.addActionListener(c -> {});
+                JButton aCommodityTile = createTile(aCommodityPrices.getCommodityTitle(), "", links.size());
+                aCommodityTile.addActionListener(c ->
+                {
+                    JPanel individualItemPanel = new JPanel(new GridLayout(1, 2));
+                    JButton backButton = createTile("Back To Main Dashboard", "", 1);
+                    backButton.addActionListener(y -> addComponent(dashboardPanel));
+                    individualItemPanel.add(backButton);
+                    //BarChart aChart = new BarChart("TEST", new String[]{"A", "B", "C"}, new Double[]{1.0, 2.0, 3.0});
+                    String[] barChartTitles = new String[aCommodityPrices.getPrices().size()];
+                    Double[] values = new Double[aCommodityPrices.getPrices().size()];
+                    int counter = 0;
+                    for(Map.Entry<String, ArrayList<String>> aPrices : aCommodityPrices.getPrices().entrySet())
+                    {
+                        barChartTitles[counter] = aPrices.getKey();
+                        String aPrice = aPrices.getValue().get(0);
+                        values[counter] = Double.parseDouble(aPrices.getValue().get(0));
+                    }
+                    BarChart aChart = new BarChart(aCommodityPrices.getCommodityTitle() + " " + aCommodityPrices.getDate(), barChartTitles, values);
+                    individualItemPanel.add(aChart);
+                    addComponent(individualItemPanel);
+                });
                 dashboardPanel.add(aCommodityTile);
             });
-            /*Document aDocument = Jsoup.parse(formattedResult);
-            Elements iframeTags = aDocument.getElementsByTag("iframe");
-            if(iframeTags.size() >= 3)
+            addComponent(dashboardPanel);
+        /*Document aDocument = Jsoup.parse(formattedResult);
+        Elements iframeTags = aDocument.getElementsByTag("iframe");
+        if(iframeTags.size() >= 3)
+        {
+            iframeTags.remove(iframeTags.size() - 1);
+            iframeTags.remove(iframeTags.size() - 1);
+            iframeTags.remove(iframeTags.size() - 1);
+        }
+        iframeTags.forEach(x ->
+        {
+            //System.out.println("SRC: "  + x.attr("src"));
+            RetrieveContent aPage = new RetrieveContent(x.attr("src"));
+            String webPageContents = aPage.getText();
+            System.out.println(webPageContents);
+            Document currentDocument = Jsoup.parse(webPageContents);
+            Elements fontTags = aDocument.getElementsByTag("font");
+            fontTags.forEach(y ->
             {
-                iframeTags.remove(iframeTags.size() - 1);
-                iframeTags.remove(iframeTags.size() - 1);
-                iframeTags.remove(iframeTags.size() - 1);
-            }
-            iframeTags.forEach(x ->
-            {
-                //System.out.println("SRC: "  + x.attr("src"));
-                RetrieveContent aPage = new RetrieveContent(x.attr("src"));
-                String webPageContents = aPage.getText();
-                System.out.println(webPageContents);
-                Document currentDocument = Jsoup.parse(webPageContents);
-                Elements fontTags = aDocument.getElementsByTag("font");
-                fontTags.forEach(y ->
-                {
-                    String aFontTag = y.html();
-                    //aFontTag = aFontTag.substring(aFontTag.indexOf('>') + 1);
-                    //aFontTag = aFontTag.substring(0, aFontTag.indexOf("<"));
-                    System.out.println(aFontTag);
-                });
-            });*/
-            /*Pattern aPattern = Pattern.compile("<iframe>(\\S+)</iframe>");
-            //Pattern aPattern = Pattern.compile("\"<([^\\\\s>/]+)\"");
-            Matcher aMatcher = aPattern.matcher(formattedResult);
-            if(aMatcher.find())
-            {
-                System.out.println("LOCATED A MATCH");
-                for(int counter = 1; counter <= aMatcher.groupCount(); counter++)
-                    System.out.println("A MATCH: " + aMatcher.group(counter));
-            }*/
+                String aFontTag = y.html();
+                //aFontTag = aFontTag.substring(aFontTag.indexOf('>') + 1);
+                //aFontTag = aFontTag.substring(0, aFontTag.indexOf("<"));
+                System.out.println(aFontTag);
+            });
+        });*/
+        /*Pattern aPattern = Pattern.compile("<iframe>(\\S+)</iframe>");
+        //Pattern aPattern = Pattern.compile("\"<([^\\\\s>/]+)\"");
+        Matcher aMatcher = aPattern.matcher(formattedResult);
+        if(aMatcher.find())
+        {
+            System.out.println("LOCATED A MATCH");
+            for(int counter = 1; counter <= aMatcher.groupCount(); counter++)
+                System.out.println("A MATCH: " + aMatcher.group(counter));
+        }*/
             //System.out.println(formattedResult);
         }
         catch(Exception error)

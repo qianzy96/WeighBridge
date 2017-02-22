@@ -41,6 +41,15 @@ public class Components
         aFrame.setFocusable(true);
         return aFrame;
     }
+    protected JRibbonFrame createRibbonFrame(String title)
+    {
+        JRibbonFrame aRibbonFrame = new JRibbonFrame();
+        aRibbonFrame.setTitle(title);
+        aRibbonFrame.pack();
+        aRibbonFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        aRibbonFrame.setFocusable(true);
+        return aRibbonFrame;
+    }
     protected JScrollPane createScrollPane()
     {
         JScrollPane aScrollPane = new JScrollPane();
