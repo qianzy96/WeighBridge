@@ -1,4 +1,9 @@
 import javafx.scene.control.DatePicker;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -17,16 +22,11 @@ import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,9 +55,13 @@ public class Administration extends Components
         createTaskOnRibbon("Supplier", "Suppliers", "suppliers");
         createTaskOnRibbon("Contract", "Contracts", "contracts");
         createTaskOnRibbon("Setting", "Settings", "settings");
+        JRibbonBand configurationBand = createRibbonBand("Configuration");
+        JCommandButton extractInformationFromSpreadsheetButton = createCommandButton("Extract Information From Spreadsheet");
+        extractInformationFromSpreadsheetButton.addActionListener(x -> extractInformationFromSpreadSheet());
+        configurationBand.addCommandButton(extractInformationFromSpreadsheetButton, RibbonElementPriority.TOP);
+        frame.getRibbon().addTask(createRibbonTask("Configuration", new JRibbonBand[]{configurationBand}));
         frame.getRibbon().setApplicationMenu(createApplicationMenu());
         frame.setVisible(true);
-        //createDashboard();
         //frame.add(ribbon, BorderLayout.NORTH);
     }
     protected RibbonApplicationMenu createApplicationMenu()
@@ -90,97 +94,6 @@ public class Administration extends Components
         RibbonApplicationMenuEntryPrimary aMenuEntry = createApplicationMenuEntry(pluralWord, (x) -> {});
         aMenuEntry.addSecondaryMenuGroup(pluralWord, new RibbonApplicationMenuEntrySecondary[]{viewMenuEntry, addMenuEntry, deleteMenuEntry, updateMenuEntry});
         return aMenuEntry;
-    }
-    private void createDashboard()
-    {
-        try
-        {
-            RetrieveContent noggersPage = new RetrieveContent("http://www.noggersblog.co.uk/prices/marketinfo/index2.htm");
-            String webPage = noggersPage.getText();
-            String desiredContent = webPage.substring(webPage.indexOf("<!--document.write(unescape('") + 29);
-            String formattedResult = URLDecoder.decode(desiredContent.substring(0, desiredContent.length() - 32), "UTF-8");
-            ArrayList<String> links = Utilities.extractAttributeOfTags(formattedResult, "<iframe src=\".*?\".*?></iframe>", "src");
-            if(links.size() > 5)
-                for(int index = 0; index < 5; index++)
-                    links.remove(links.size() - 1);
-            JPanel dashboardPanel = new JPanel(new GridLayout(4, 4));
-            links.forEach(x ->
-            {
-                RetrieveContent aPage = new RetrieveContent(x);
-                String pageContent = aPage.getText();
-                ArrayList<String> pageContents = Utilities.extractTextBetweenTags(pageContent, "<font.*?>", "</font>");
-                CommodityPrices aCommodityPrices = new CommodityPrices(pageContents.get(0), pageContents.get(1));
-                for(int index = 2; index < 7; index++)
-                    aCommodityPrices.addHeading(pageContents.get(index));
-                for(int counter = 7; counter < pageContents.size(); counter = counter + 5)
-                {
-                    aCommodityPrices.addPrices(pageContents.get(counter), new ArrayList<>(Arrays.asList(pageContents.get(counter + 1), pageContents.get(counter + 2),
-                            pageContents.get(counter + 3), pageContents.get(counter + 4))));
-                }
-                System.out.println(aCommodityPrices.toString());
-                JButton aCommodityTile = createTile(aCommodityPrices.getCommodityTitle(), "", links.size());
-                aCommodityTile.addActionListener(c ->
-                {
-                    JPanel individualItemPanel = new JPanel(new GridLayout(1, 2));
-                    JButton backButton = createTile("Back To Main Dashboard", "", 1);
-                    backButton.addActionListener(y -> addComponent(dashboardPanel));
-                    individualItemPanel.add(backButton);
-                    //BarChart aChart = new BarChart("TEST", new String[]{"A", "B", "C"}, new Double[]{1.0, 2.0, 3.0});
-                    String[] barChartTitles = new String[aCommodityPrices.getPrices().size()];
-                    Double[] values = new Double[aCommodityPrices.getPrices().size()];
-                    int counter = 0;
-                    for(Map.Entry<String, ArrayList<String>> aPrices : aCommodityPrices.getPrices().entrySet())
-                    {
-                        barChartTitles[counter] = aPrices.getKey();
-                        String aPrice = aPrices.getValue().get(0);
-                        values[counter] = Double.parseDouble(aPrices.getValue().get(0));
-                    }
-                    BarChart aChart = new BarChart(aCommodityPrices.getCommodityTitle() + " " + aCommodityPrices.getDate(), barChartTitles, values);
-                    individualItemPanel.add(aChart);
-                    addComponent(individualItemPanel);
-                });
-                dashboardPanel.add(aCommodityTile);
-            });
-            addComponent(dashboardPanel);
-        /*Document aDocument = Jsoup.parse(formattedResult);
-        Elements iframeTags = aDocument.getElementsByTag("iframe");
-        if(iframeTags.size() >= 3)
-        {
-            iframeTags.remove(iframeTags.size() - 1);
-            iframeTags.remove(iframeTags.size() - 1);
-            iframeTags.remove(iframeTags.size() - 1);
-        }
-        iframeTags.forEach(x ->
-        {
-            //System.out.println("SRC: "  + x.attr("src"));
-            RetrieveContent aPage = new RetrieveContent(x.attr("src"));
-            String webPageContents = aPage.getText();
-            System.out.println(webPageContents);
-            Document currentDocument = Jsoup.parse(webPageContents);
-            Elements fontTags = aDocument.getElementsByTag("font");
-            fontTags.forEach(y ->
-            {
-                String aFontTag = y.html();
-                //aFontTag = aFontTag.substring(aFontTag.indexOf('>') + 1);
-                //aFontTag = aFontTag.substring(0, aFontTag.indexOf("<"));
-                System.out.println(aFontTag);
-            });
-        });*/
-        /*Pattern aPattern = Pattern.compile("<iframe>(\\S+)</iframe>");
-        //Pattern aPattern = Pattern.compile("\"<([^\\\\s>/]+)\"");
-        Matcher aMatcher = aPattern.matcher(formattedResult);
-        if(aMatcher.find())
-        {
-            System.out.println("LOCATED A MATCH");
-            for(int counter = 1; counter <= aMatcher.groupCount(); counter++)
-                System.out.println("A MATCH: " + aMatcher.group(counter));
-        }*/
-            //System.out.println(formattedResult);
-        }
-        catch(Exception error)
-        {
-            JOptionPane.showMessageDialog(null, error);
-        }
     }
     private void createReportsTaskOnRibbon()
     {
@@ -310,13 +223,13 @@ public class Administration extends Components
     {
         JRibbonBand aBand = createRibbonBand(pluralWord);
         JCommandButton viewButton = createCommandButton("View " + pluralWord);
-        viewButton.addActionListener((x) -> viewTableContents(tableName));
+        viewButton.addActionListener(x -> viewTableContents(tableName));
         JCommandButton addButton = createCommandButton("Add An " + singularWord);
-        addButton.addActionListener((x) -> addRowToTable(tableName));
+        addButton.addActionListener(x -> addRowToTable(tableName));
         JCommandButton deleteButton = createCommandButton("Delete An " + singularWord);
-        deleteButton.addActionListener((x) -> deleteRowFromTable(tableName));
+        deleteButton.addActionListener(x -> deleteRowFromTable(tableName));
         JCommandButton updateButton = createCommandButton("Update An " + singularWord);
-        updateButton.addActionListener((x) -> updateRowFromTable(tableName));
+        updateButton.addActionListener(x -> updateRowFromTable(tableName));
         aBand.addCommandButton(viewButton, RibbonElementPriority.TOP);
         aBand.addCommandButton(addButton, RibbonElementPriority.TOP);
         aBand.addCommandButton(deleteButton, RibbonElementPriority.TOP);
@@ -432,6 +345,42 @@ public class Administration extends Components
         });
         aPanel.add(aButton);
         addComponent(aPanel);
+    }
+    public void extractInformationFromSpreadSheet()
+    {
+        try
+        {
+            FileInputStream aFile = new FileInputStream(new File("Beef-Ration-Calculator-041115.xlsx"));
+            XSSFWorkbook aWorkbook = new XSSFWorkbook(aFile);
+            Iterator<Row> availableRows = aWorkbook.getSheetAt(1).iterator();
+            ArrayList<ArrayList<String>> rowContents = new ArrayList<>();
+            int counter = 1;
+            while(availableRows.hasNext())
+            {
+                Row currentRow = availableRows.next();
+                if(counter >= 4 && counter <= 78)
+                {
+                    ArrayList<String> aRow = new ArrayList<>(Arrays.asList((counter - 3) + ""));
+                    Iterator<Cell> availableCells = currentRow.iterator();
+                    while (availableCells.hasNext())
+                    {
+                        Cell currentCell = availableCells.next();
+                        aRow.add(currentCell.toString());
+                    }
+                    rowContents.add(aRow);
+                }
+                counter++;
+            }
+            aWorkbook.close();
+            aFile.close();
+            for(ArrayList<String> aRow : rowContents)
+                for(String aCell : aRow)
+                    System.out.println(aCell);
+        }
+        catch(Exception error)
+        {
+            JOptionPane.showMessageDialog(null, error);
+        }
     }
     private void addComponent(JComponent aComponent)
     {

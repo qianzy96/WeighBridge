@@ -23,5 +23,10 @@
     <orderEntry type="library" name="itext7-layout-7.0.1" level="project" />
     <orderEntry type="library" name="javax.mail" level="project" />
     <orderEntry type="library" name="jsoup-1.10.2" level="project" />
+    <orderEntry type="library" name="jfreechart-1.0.19-demo" level="project" />
+    <orderEntry type="library" name="jfreechart-1.0.19" level="project" />
+    <orderEntry type="library" name="poi-3.16-beta2" level="project" />
+    <orderEntry type="library" name="poi-ooxml-3.16-beta2" level="project" />
+    <orderEntry type="library" name="poi-ooxml-schemas-3.16-beta2" level="project" />
   </component>
 </module>

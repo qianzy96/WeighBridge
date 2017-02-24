@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-
 public class BarChart extends JPanel
 {
     private String title;
@@ -16,8 +15,10 @@ public class BarChart extends JPanel
     {
         super.paintComponent(g);
         Double minimum = 0.0, maximum = 0.0;
+        System.out.println("VALUES SIZE: " + values.length);
         for(double aValue : values)
         {
+            System.out.println("A VALUE: " + aValue);
             if(minimum > aValue)
                 minimum = aValue;
             if(maximum < aValue)
@@ -59,27 +60,3 @@ public class BarChart extends JPanel
         }
     }
 }
-/*  public static void main(String[] args) {
-
-    JFrame.setDefaultLookAndFeelDecorated(true);
-    JFrame frame = new JFrame("Bar Chart Example");
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setSize(350, 300);
-
-    String title = "My Title";
-    double[] values = new double[]{1,2,3,4,5};
-    String[] labels = new String[]{"A","B","C","D","E"};
-    Color[] colors = new Color[]{
-        Color.red,
-        Color.orange,
-        Color.yellow,
-        Color.green,
-        Color.blue
-    };
-    BarChart bc = new BarChart(values, labels, colors, title);
-
-    frame.add(bc);
-    frame.setVisible(true);
-  }
-}
-*/

@@ -63,7 +63,7 @@ public class LogOn extends Components
                 {
                     SwingUtilities.invokeLater(() ->
                     {
-                        new Calculator();
+                        new Portal(selectedUser.get(0).get(0));
                         frame.dispose();
                     });
                 }

@@ -3,13 +3,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class FeedCostsCalculator
+public class RationCalculator
 {
-    private HashMap<FeedCosts, Double> feedCosts;
+    private HashMap<Ration, Double> feedCosts;
     private Double totalFreshIntake;
     private String title;
     private Date date;
-    public FeedCostsCalculator(HashMap<FeedCosts, Double> feedCosts, String title)
+    public RationCalculator(HashMap<Ration, Double> feedCosts, String title)
     {
         this.feedCosts = feedCosts;
         this.totalFreshIntake = 0.0;
@@ -17,7 +17,7 @@ public class FeedCostsCalculator
         this.date = new Date();
         calculateTotalFreshIntake();
     }
-    public FeedCostsCalculator(String title)
+    public RationCalculator(String title)
     {
         this.feedCosts = new HashMap<>();
         this.totalFreshIntake = 0.0;
@@ -41,11 +41,11 @@ public class FeedCostsCalculator
     {
         this.date = date;
     }
-    public HashMap<FeedCosts, Double> getFeedCosts()
+    public HashMap<Ration, Double> getFeedCosts()
     {
         return feedCosts;
     }
-    public void setFeedCosts(HashMap<FeedCosts, Double> feedCosts)
+    public void setFeedCosts(HashMap<Ration, Double> feedCosts)
     {
         this.feedCosts = feedCosts;
         calculateTotalFreshIntake();
@@ -63,28 +63,28 @@ public class FeedCostsCalculator
     {
         Double dryMatter = 0.0;
         for(Map.Entry aFeedCost : feedCosts.entrySet())
-            dryMatter += Double.parseDouble(((FeedCosts) aFeedCost.getKey()).getDm()) * ((Double) aFeedCost.getValue() / totalFreshIntake);
+            dryMatter += Double.parseDouble(((Ration) aFeedCost.getKey()).getDm()) * ((Double) aFeedCost.getValue() / totalFreshIntake);
         return dryMatter;
     }
     public Double calculateCrudeProtein()
     {
         Double crudeProtein = 0.0;
         for(Map.Entry aFeedCost : feedCosts.entrySet())
-            crudeProtein += Double.parseDouble(((FeedCosts)aFeedCost.getKey()).getCp()) * ((Double)aFeedCost.getValue() / totalFreshIntake);
+            crudeProtein += Double.parseDouble(((Ration)aFeedCost.getKey()).getCp()) * ((Double)aFeedCost.getValue() / totalFreshIntake);
         return crudeProtein;
     }
     public Double calculateNDF()
     {
         Double ndf = 0.0;
         for(Map.Entry aFeedCost : feedCosts.entrySet())
-            ndf += Double.parseDouble(((FeedCosts)aFeedCost.getKey()).getNdf()) * ((Double)aFeedCost.getValue() / totalFreshIntake);
+            ndf += Double.parseDouble(((Ration)aFeedCost.getKey()).getNdf()) * ((Double)aFeedCost.getValue() / totalFreshIntake);
         return ndf;
     }
     public Double calculateStarchAndSugars()
     {
         Double starchAndSugars = 0.0;
         for(Map.Entry aFeedCost : feedCosts.entrySet())
-            starchAndSugars += (Double.parseDouble(((FeedCosts)aFeedCost.getKey()).getStarch()) + Double.parseDouble(((FeedCosts)aFeedCost.getKey()).getSugar())) *
+            starchAndSugars += (Double.parseDouble(((Ration)aFeedCost.getKey()).getStarch()) + Double.parseDouble(((Ration)aFeedCost.getKey()).getSugar())) *
             ((Double)aFeedCost.getValue() / totalFreshIntake);
         return starchAndSugars;
     }
@@ -92,21 +92,21 @@ public class FeedCostsCalculator
     {
         Double oil = 0.0;
         for(Map.Entry aFeedCost : feedCosts.entrySet())
-            oil += Double.parseDouble(((FeedCosts)aFeedCost.getKey()).getOil()) * ((Double)aFeedCost.getValue() / totalFreshIntake);
+            oil += Double.parseDouble(((Ration)aFeedCost.getKey()).getOil()) * ((Double)aFeedCost.getValue() / totalFreshIntake);
         return oil;
     }
     public Double calculateRationCostDryMatter()
     {
         Double rationCostDryMatter = 0.0;
         for(Map.Entry aFeedCost : feedCosts.entrySet())
-            rationCostDryMatter += Double.parseDouble(((FeedCosts)aFeedCost.getKey()).getCostDryMatter().substring(1)) * ((Double)aFeedCost.getValue() / totalFreshIntake);
+            rationCostDryMatter += Double.parseDouble(((Ration)aFeedCost.getKey()).getCostDryMatter().substring(1)) * ((Double)aFeedCost.getValue() / totalFreshIntake);
         return rationCostDryMatter;
     }
     public Double calculateRationCostFreshWeight()
     {
         Double rationCostFreshWeight = 0.0;
         for(Map.Entry aFeedCost : feedCosts.entrySet())
-            rationCostFreshWeight += Double.parseDouble(((FeedCosts)aFeedCost.getKey()).getCostFreshWeight().substring(1)) * ((Double)aFeedCost.getValue() / totalFreshIntake);
+            rationCostFreshWeight += Double.parseDouble(((Ration)aFeedCost.getKey()).getCostFreshWeight().substring(1)) * ((Double)aFeedCost.getValue() / totalFreshIntake);
         return rationCostFreshWeight;
     }
 }

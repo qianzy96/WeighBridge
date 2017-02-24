@@ -11,6 +11,7 @@ public class Database
     private String databaseUrl = "jdbc:mysql://localhost/weighbridge";
     private String user = "root";
     private String password = "Stiofan10";
+    private String databaseTitle = "weighbridge";
     public Database()
     {
         try
@@ -117,7 +118,8 @@ public class Database
             ArrayList<String> columnTitles = new ArrayList<>();
             Connection connection = DriverManager.getConnection(databaseUrl, user, password);
             Statement currentStatement = connection.createStatement();
-            ResultSet selectedRows = currentStatement.executeQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME LIKE '%" + tableName + "%'");
+            ResultSet selectedRows = currentStatement.executeQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME LIKE '" + tableName + "' AND " +
+            "TABLE_SCHEMA LIKE '" + databaseTitle + "';");
             Integer numberOfColumns = selectedRows.getMetaData().getColumnCount();
             while(selectedRows.next())
             {

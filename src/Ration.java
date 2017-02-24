@@ -1,4 +1,4 @@
-public class FeedCosts
+public class Ration
 {
     private int code;
     private String feed;
@@ -14,7 +14,7 @@ public class FeedCosts
     private String starch;
     private String sugar;
     private String feedingNotes;
-    public FeedCosts(int code, String feed, String costFreshWeight, String costDryMatter, String pMj, String pcp, String dm, String me, String cp, String oil,
+    public Ration(int code, String feed, String costFreshWeight, String costDryMatter, String pMj, String pcp, String dm, String me, String cp, String oil,
                      String ndf, String starch, String sugar, String feedingNotes)
     {
         this.code = code;
@@ -86,7 +86,6 @@ public class FeedCosts
     }
     public String getDm()
     {
-        System.out.println("GET DM METHOD CALLED: " + dm);
         return dm;
     }
     public void setDm(String dm)

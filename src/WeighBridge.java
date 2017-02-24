@@ -77,7 +77,8 @@ public class WeighBridge extends Components
         {
             SwingUtilities.invokeLater(() ->
             {
-                Calculator aCalculator = new Calculator();
+                Registration registration = new Registration();
+                registration.createRegistrationDialogBox();
                 frame.dispose();
             });
         });

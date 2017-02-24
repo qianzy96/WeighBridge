@@ -18,8 +18,7 @@ public class Report
         {
             PdfDocument aPdfDocument = new PdfDocument(new PdfWriter(fileLocation));
             aReport = new Document(aPdfDocument);
-            PdfFont aFont = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
-            aReport.setFont(aFont);
+            aReport.setFont(PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD));
         }
         catch(Exception error)
         {
