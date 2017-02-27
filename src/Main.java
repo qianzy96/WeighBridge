@@ -1,17 +1,13 @@
-import org.pushingpixels.flamingo.api.ribbon.JRibbonFrame;
+import Frames.WeighBridgeFrame;
+import Models.WeighBridge;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import static java.lang.System.out;
 
 public class Main
 {
     public static void main(String[] args)
     {
-        /*Database mainDatabase = new Database();
+        /*Database.Database mainDatabase = new Database.Database();
         ArrayList<ArrayList<String>> mainDetails = mainDatabase.getTableRows("drivers", new HashMap<>(), new ArrayList<>());
         mainDetails.forEach(x -> x.forEach(y -> System.out.println(y)));
         mainDatabase.insertTableRow("drivers", new ArrayList<String>(Arrays.asList(new String[]{"4", "Simon", "Conway"})));
@@ -20,7 +16,7 @@ public class Main
         tableTitles.forEach(x -> System.out.println(x));*/
         /*SwingUtilities.invokeLater(() ->
         {
-            Administration anAdministration = new Administration();
+            Models.Administration anAdministration = new Models.Administration();
             anAdministration.createRibbon();
             //aFrame.add(aComponent.createTable(""));
         });*/
@@ -31,7 +27,8 @@ public class Main
         });*/
         SwingUtilities.invokeLater(() ->
         {
-            WeighBridge aWeighBridge = new WeighBridge();
+            new WeighBridgeFrame();
+            //WeighBridge aWeighBridge = new WeighBridge();
             //aWeighBridge.selectWeightType();
         });
     }
