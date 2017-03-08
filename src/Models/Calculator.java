@@ -3,6 +3,7 @@ import Database.Database;
 import Entities.Ration;
 import Entities.RationCalculator;
 import Frames.Components;
+import Reckner.RecknerCommodity;
 import Utilities.Email;
 import Utilities.Printer;
 import Utilities.Report;
@@ -32,6 +33,20 @@ public class Calculator extends Components
         contents.forEach(x -> availableRations.add(new Ration(Integer.parseInt(x.get(0)), x.get(1), x.get(2), x.get(3), x.get(4), x.get(5), x.get(6), x.get(7), x.get(8),
         x.get(9), x.get(10), x.get(11), x.get(12), x.get(13))));
         return availableRations;
+    }
+    public ArrayList<RecknerCommodity> getAvailableRecknerCommodities()
+    {
+        ArrayList<RecknerCommodity> availableCommodities = new ArrayList<>();
+        ArrayList<ArrayList<String>> contents = main.getTableRows("recknercommodities", new HashMap<>(), new ArrayList<>(), "");
+        contents.forEach(x -> availableCommodities.add(new RecknerCommodity(Integer.parseInt(x.get(0)), x.get(1), Double.parseDouble(x.get(2)),
+        Double.parseDouble(x.get(3)), Double.parseDouble(x.get(4)), Double.parseDouble(x.get(5)), Double.parseDouble(x.get(6)), Double.parseDouble(x.get(7)),
+        Double.parseDouble(x.get(8)), Double.parseDouble(x.get(9)), Double.parseDouble(x.get(10)), Double.parseDouble(x.get(11)), Double.parseDouble(x.get(12)),
+        Double.parseDouble(x.get(13)), Double.parseDouble(x.get(14)), Double.parseDouble(x.get(15)), Double.parseDouble(x.get(16)), Double.parseDouble(x.get(17)),
+        Double.parseDouble(x.get(18)), Double.parseDouble(x.get(19)), Double.parseDouble(x.get(20)), Double.parseDouble(x.get(21)), Double.parseDouble(x.get(22)),
+        Double.parseDouble(x.get(23)), Double.parseDouble(x.get(24)), Double.parseDouble(x.get(25)), Double.parseDouble(x.get(26)), Double.parseDouble(x.get(27)),
+        Double.parseDouble(x.get(28)), Double.parseDouble(x.get(29)), Double.parseDouble(x.get(30)), Double.parseDouble(x.get(31)), Double.parseDouble(x.get(32)),
+        Double.parseDouble(x.get(33)), Double.parseDouble(x.get(34)), Double.parseDouble(x.get(35)))));
+        return availableCommodities;
     }
     public ArrayList<String> getAvailableRationTypes()
     {

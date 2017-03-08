@@ -26,6 +26,13 @@ public class SecondWeight
         this.date = date;
         this.firstWeight = firstWeight;
     }
+    public double getNetWeight()
+    {
+        if(weight - firstWeight.getWeight() >= 0)
+            return weight - firstWeight.getWeight();
+        else
+            return firstWeight.getWeight() - weight;
+    }
     public int getCode()
     {
         return code;

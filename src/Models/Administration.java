@@ -1,5 +1,5 @@
 package Models;
-import Entities.BatchNumber;
+import Entities.*;
 import Frames.Components;
 import Database.Database;
 import Utilities.Utilities;
@@ -128,48 +128,86 @@ public class Administration extends Components
     {
         return new ArrayList<>(Arrays.asList("Commodity", "Total Quantity", "Total Price", "Docket Type", "First Name", "Last Name"));
     }
+    public ArrayList<BatchNumber> getLoadsWithBatchNumbers(String consigneeType)
+    {
+        return getLoads(consigneeType, true, false);
+    }
+    public void insertNewBatchNumber(BatchNumber aBatchNumber)
+    {
+        int maximumValue = main.getMaxValueOfColumn("batchnumbers", "code");
+        aBatchNumber.setCode(maximumValue + 1);
+        main.insertTableRow("batchnumbers", aBatchNumber.toList());
+    }
     public ArrayList<BatchNumber> getLoadsWithNoBatchNumbers(String consigneeType)
     {
-        ArrayList<String> tableTitles = new ArrayList<>(Arrays.asList("commodities", "secondweights", "firstweights", consigneeType, "dockettypes"));
+        return getLoads(consigneeType, false, true);
+    }
+    private ArrayList<BatchNumber> getLoads(String consigneeType, Boolean includeLoadsWithBatchNumbers, Boolean includeLoadsWithNoBatchNumbers)
+    {
+        ArrayList<String> tableTitles = new ArrayList<>(Arrays.asList("secondweights", "firstweights", "commodities", consigneeType, "dockettypes", "drivers"));
         ArrayList<String> joinConditions = new ArrayList<>(Arrays.asList("secondweights.firstweight", "firstweights.code", "firstweights.commodity", "commodities.code",
-        "firstweights.consignee", consigneeType + ".code", "firstweights.dockettype", "dockettypes.code"));
-        ArrayList<String> desiredColumns = new ArrayList<>(Arrays.asList("secondweights.code", "secondweights.date", "commodities.title", "secondweights.weight",
-        "firstweights.weight", consigneeType + ".firstname", consigneeType + ".lastname"));
+        "firstweights.consignee", consigneeType + ".code", "firstweights.dockettype", "dockettypes.code", "firstweights.driver", "drivers.code"));
         HashMap<String, String> selectedValues = new HashMap<>();
         if(consigneeType.equals("suppliers"))
             selectedValues.put("dockettypes.code", "2");
         else if(consigneeType.equals("customers"))
             selectedValues.put("dockettypes.code", "1");
-        ArrayList<ArrayList<String>> allLoads = main.getJoinedTableRows(tableTitles, joinConditions, selectedValues, desiredColumns, "");
+        ArrayList<ArrayList<String>> allLoads = main.getJoinedTableRows(tableTitles, joinConditions, selectedValues, new ArrayList<>(), "");
         for(ArrayList<String> aLoad : allLoads)
             for(String aLoadComponent: aLoad)
                 System.out.println(aLoadComponent);
         ArrayList<ArrayList<String>> batchNumbers = main.getTableRows("batchnumbers", new HashMap<>(), new ArrayList<>(Arrays.asList("secondweight")),
-        "");
+                "");
         HashSet<String> batchedLoads = new HashSet<>();
         batchNumbers.forEach(x -> batchedLoads.add(x.get(0)));
-        ArrayList<BatchNumber> loadsWithoutBatchNumbers = new ArrayList<>();
+        ArrayList<BatchNumber> selectedLoads = new ArrayList<>();
         for(ArrayList<String> aLoad : allLoads)
         {
-            if(!batchedLoads.contains(aLoad.get(0)))
-                loadsWithoutBatchNumbers.add(new BatchNumber(aLoad.get(2), Double.parseDouble(aLoad.get(3)) - Double.parseDouble(aLoad.get(4)),
-                Utilities.createDate(aLoad.get(1), "dddd/MM/yyyy hh:mm:ss")));
+            if(!batchedLoads.contains(aLoad.get(0)) && includeLoadsWithNoBatchNumbers)
+            {
+                FirstWeight aFirstWeight = new FirstWeight(Integer.parseInt(aLoad.get(3)), new Driver(Integer.parseInt(aLoad.get(13)), aLoad.get(14), aLoad.get(15)),
+                new Commodity(Integer.parseInt(aLoad.get(11)), aLoad.get(12)), Double.parseDouble(aLoad.get(7)),
+                Utilities.createDate(aLoad.get(8), "yyyy/MM/dd HH:mm:ss"), new DocketType(Integer.parseInt(aLoad.get(16)), aLoad.get(17)),
+                new Consignee(Integer.parseInt(aLoad.get(18)), aLoad.get(19), aLoad.get(20)));
+                SecondWeight aSecondWeight = new SecondWeight(Integer.parseInt(aLoad.get(0)), Double.parseDouble(aLoad.get(1)),
+                Utilities.createDate(aLoad.get(2), "yyyy/MM/dd HH:mm:ss"), aFirstWeight);
+                selectedLoads.add(new BatchNumber(aSecondWeight));
+            }
+            else if(batchedLoads.contains(aLoad.get(0)) && includeLoadsWithBatchNumbers)
+            {
+                FirstWeight aFirstWeight = new FirstWeight(Integer.parseInt(aLoad.get(3)), new Driver(Integer.parseInt(aLoad.get(13)), aLoad.get(14), aLoad.get(15)),
+                new Commodity(Integer.parseInt(aLoad.get(11)), aLoad.get(12)), Double.parseDouble(aLoad.get(7)),
+                Utilities.createDate(aLoad.get(8), "yyyy/MM/dd HH:mm:ss"), new DocketType(Integer.parseInt(aLoad.get(16)), aLoad.get(17)),
+                new Consignee(Integer.parseInt(aLoad.get(18)), aLoad.get(19), aLoad.get(20)));
+                SecondWeight aSecondWeight = new SecondWeight(Integer.parseInt(aLoad.get(0)), Double.parseDouble(aLoad.get(1)),
+                Utilities.createDate(aLoad.get(2), "yyyy/MM/dd HH:mm:ss"), aFirstWeight);
+                selectedLoads.add(new BatchNumber(aSecondWeight));
+            }
         }
-        return loadsWithoutBatchNumbers;
+        return selectedLoads;
     }
-    public void extractInformationFromSpreadSheet()
+    public void extractInformationFromRecknerSpreadsheet()
+    {
+        extractInformationFromSpreadSheet("Ration_Reckner_Version_9.xlsx", 2);
+    }
+    public void extractInformationFromRationSpreadsheet()
+    {
+        extractInformationFromSpreadSheet("Beef-Ration-Calculator-041115.xlsx", 1);
+    }
+    public void extractInformationFromSpreadSheet(String fileName, int sheetNumber)
     {
         try
         {
-            FileInputStream aFile = new FileInputStream(new File("Beef-Entities.Ration-Models.Calculator-041115.xlsx"));
+            FileInputStream aFile = new FileInputStream(new File(fileName));
             XSSFWorkbook aWorkbook = new XSSFWorkbook(aFile);
-            Iterator<Row> availableRows = aWorkbook.getSheetAt(1).iterator();
+            Iterator<Row> availableRows = aWorkbook.getSheetAt(sheetNumber).iterator();
             ArrayList<ArrayList<String>> rowContents = new ArrayList<>();
             int counter = 1;
             while(availableRows.hasNext())
             {
                 Row currentRow = availableRows.next();
-                if(counter >= 4 && counter <= 78)
+                if((counter >= 4 && counter <= 78 && fileName.equals("Beef-Ration-Calculator-041115.xlsx")) ||
+                (counter >= 5 && counter <= 155 && fileName.equals("Ration_Reckner_Version_9.xlsx")))
                 {
                     ArrayList<String> aRow = new ArrayList<>(Arrays.asList((counter - 3) + ""));
                     Iterator<Cell> availableCells = currentRow.iterator();

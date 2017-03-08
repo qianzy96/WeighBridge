@@ -4,63 +4,31 @@ import java.util.Arrays;
 import java.util.Date;
 public class BatchNumber
 {
-    private String commodityTitle;
-    private Double netWeight;
-    private Date date;
+    private int code;
     private String batchNumber;
-    private String code;
-    public BatchNumber(String code, String commodityTitle, Double netWeight, Date date, String batchNumber)
+    private SecondWeight secondWeight;
+    public BatchNumber(int code, String batchNumber, SecondWeight secondWeight)
     {
         this.code = code;
-        this.commodityTitle = commodityTitle;
-        this.netWeight = netWeight;
-        this.date = date;
         this.batchNumber = batchNumber;
+        this.secondWeight = secondWeight;
     }
-    public BatchNumber(String commodityTitle, Double netWeight, Date date, String batchNumber)
+    public BatchNumber(String batchNumber, SecondWeight secondWeight)
     {
-        this.commodityTitle = commodityTitle;
-        this.netWeight = netWeight;
-        this.date = date;
         this.batchNumber = batchNumber;
+        this.secondWeight = secondWeight;
     }
-    public BatchNumber(String commodityTitle, Double netWeight, Date date)
+    public BatchNumber(SecondWeight secondWeight)
     {
-        this.commodityTitle = commodityTitle;
-        this.netWeight = netWeight;
-        this.date = date;
+        this.secondWeight = secondWeight;
     }
-    public String getCode()
+    public int getCode()
     {
         return code;
     }
-    public void setCode(String code)
+    public void setCode(int code)
     {
         this.code = code;
-    }
-    public String getCommodityTitle()
-    {
-        return commodityTitle;
-    }
-    public void setCommodityTitle(String commodityTitle)
-    {
-        this.commodityTitle = commodityTitle;
-    }
-    public Double getNetWeight()
-    {
-        return netWeight;
-    }
-    public void setNetWeight(Double netWeight)
-    {
-        this.netWeight = netWeight;
-    }
-    public Date getDate()
-    {
-        return date;
-    }
-    public void setDate(Date date)
-    {
-        this.date = date;
     }
     public String getBatchNumber()
     {
@@ -70,13 +38,20 @@ public class BatchNumber
     {
         this.batchNumber = batchNumber;
     }
+    public SecondWeight getSecondWeight()
+    {
+        return secondWeight;
+    }
+    public void setSecondWeight(SecondWeight secondWeight)
+    {
+        this.secondWeight = secondWeight;
+    }
     public String toString()
     {
-        return "Commodity Title: " + commodityTitle + " Date: " + date.toString() + " Net Weight: " + netWeight +
-        " Batch Number: " + batchNumber;
+        return "Code: " + code + " Batch Number: " + batchNumber;
     }
-    /*public ArrayList<String> toList()
+    public ArrayList<String> toList()
     {
-        return new ArrayList<>(Arrays.asList(code, ))
-    }*/
+        return new ArrayList<>(Arrays.asList(code + "", secondWeight.getCode() + "", batchNumber));
+    }
 }

@@ -68,9 +68,30 @@ public class CalculatorFrame extends Components
         printPDFFileButton.addActionListener(x -> aCalculator.printPDFFile(rationsWithQuantities, userID, title));
         quickActionsBand.addCommandButton(printPDFFileButton, RibbonElementPriority.TOP);
         RibbonTask quickActionsTask = createRibbonTask("Quick Actions", new JRibbonBand[]{quickActionsBand});
+        JRibbonBand recknerBand = createRibbonBand("Reckner Formulations");
+        JCommandButton calculateARecknerFormulationButton = createCommandButton("Calculate A Reckner Formulation");
+        calculateARecknerFormulationButton.addActionListener(x -> {});
+        recknerBand.addCommandButton(calculateARecknerFormulationButton, RibbonElementPriority.TOP);
+        JCommandButton viewReckerRations = createCommandButton("View Recker Rations");
+        viewReckerRations.addActionListener(x -> {});
+        recknerBand.addCommandButton(viewReckerRations, RibbonElementPriority.TOP);
+        JCommandButton deleteARecknerRation = createCommandButton("Delete A Reckner Ration");
+        deleteARecknerRation.addActionListener(x -> {});
+        recknerBand.addCommandButton(deleteARecknerRation, RibbonElementPriority.TOP);
+        JRibbonBand recknerCommoditiesBand = createRibbonBand("Reckner Commodities");
+        JCommandButton viewRecknerCommodities = createCommandButton("View Reckner Commodities");
+        viewRecknerCommodities.addActionListener(x -> {});
+        recknerCommoditiesBand.addCommandButton(viewRecknerCommodities, RibbonElementPriority.TOP);
+        JCommandButton deleteARecknerCommodity = createCommandButton("Delete A Reckner Commodity");
+        deleteARecknerCommodity.addActionListener(x -> {});
+        recknerCommoditiesBand.addCommandButton(deleteARecknerCommodity, RibbonElementPriority.TOP);
+        RibbonTask recknerTask = createRibbonTask("Reckner Formulations", new JRibbonBand[]{recknerBand});
+        RibbonTask reckerCommoditiesTask = createRibbonTask("Reckner Commodities", new JRibbonBand[]{recknerCommoditiesBand});
         frame.getRibbon().addTask(rationsTask);
         frame.getRibbon().addTask(commoditiesTask);
         frame.getRibbon().addTask(quickActionsTask);
+        frame.getRibbon().addTask(reckerCommoditiesTask);
+        frame.getRibbon().addTask(recknerTask);
         RibbonApplicationMenu anApplicationMenu = new RibbonApplicationMenu();
         for(int counter = 0; counter < 7; counter++)
         {
@@ -85,6 +106,31 @@ public class CalculatorFrame extends Components
         anApplicationMenu.addFooterEntry(createFooterApplicationMenuEntry("Exit", x -> System.exit(0)));
         frame.getRibbon().setApplicationMenu(anApplicationMenu);
         frame.setVisible(true);
+    }
+    public void createRecknerDialogBoxStepOne()
+    {
+        JPanel mainPanel = new JPanel(new GridLayout(5, 1));
+        JProgressBar progressBar = createProgressBar(0, 100, 50);
+        mainPanel.add(progressBar);
+        JTextField titleTextField = createTextField("");
+        mainPanel.add(createLabel("Please enter the title of the ration"));
+        mainPanel.add(titleTextField);
+        JButton saveCalculationButton = createButton("Proceed To Step 2");
+        saveCalculationButton.addActionListener(x ->
+        {
+            if(titleTextField.getText().length() > 1)
+            {
+                title = titleTextField.getText();
+                createRecknerDialogBoxStepTwo();
+            }
+        });
+        addComponent(mainPanel);
+    }
+    public void createRecknerDialogBoxStepTwo()
+    {
+        JPanel mainPanel = new JPanel(new GridLayout(5, 1));
+        JProgressBar progressBar = createProgressBar(0, 100, 100);
+
     }
     public void createCalculatorDialogBoxStepOne()
     {

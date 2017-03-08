@@ -39,18 +39,35 @@ public class AdministrationFrame extends Components
         createTaskOnRibbon("Supplier", "Suppliers", "suppliers");
         createTaskOnRibbon("Contract", "Contracts", "contracts");
         createTaskOnRibbon("Setting", "Settings", "settings");
-        createTaskOnRibbon("Batch Number", "Batch Numbers", "batchnumbers");
+        //createTaskOnRibbon("Batch Number", "Batch Numbers", "batchnumbers");
         JRibbonBand configurationBand = createRibbonBand("Configuration");
-        JCommandButton extractInformationFromSpreadsheetButton = createCommandButton("Extract Information From Spreadsheet");
-        extractInformationFromSpreadsheetButton.addActionListener(x -> anAdministration.extractInformationFromSpreadSheet());
+        JCommandButton extractInformationFromSpreadsheetButton = createCommandButton("Extract Information From Ration Spreadsheet");
+        extractInformationFromSpreadsheetButton.addActionListener(x -> anAdministration.extractInformationFromRationSpreadsheet());
         configurationBand.addCommandButton(extractInformationFromSpreadsheetButton, RibbonElementPriority.TOP);
-        JCommandButton addBatchNumbersForCustomersButton = createCommandButton("Add Batch Numbers For Customers");
-        addBatchNumbersForCustomersButton.addActionListener(x -> addBatchNumbers("customers"));
-        configurationBand.addCommandButton(addBatchNumbersForCustomersButton, RibbonElementPriority.TOP);
-        JCommandButton addBatchNumbersForSuppliersButton = createCommandButton("Add Batch Numbers For Suppliers");
-        addBatchNumbersForSuppliersButton.addActionListener(x -> addBatchNumbers("suppliers"));
-        configurationBand.addCommandButton(addBatchNumbersForSuppliersButton, RibbonElementPriority.TOP);
+        JCommandButton extractInformationFromRecknerSpreadsheetButton = createCommandButton("Extract Information From Reckner Spreadsheet");
+        extractInformationFromRecknerSpreadsheetButton.addActionListener(x -> anAdministration.extractInformationFromRecknerSpreadsheet());
+        configurationBand.addCommandButton(extractInformationFromRecknerSpreadsheetButton, RibbonElementPriority.TOP);
         frame.getRibbon().addTask(createRibbonTask("Configuration", new JRibbonBand[]{configurationBand}));
+        JRibbonBand batchNumbersBand = createRibbonBand("Batch Numbers");
+        JCommandButton addBatchNumbersForCustomersButton = createCommandButton("Add Batch Numbers For Customers");
+        addBatchNumbersForCustomersButton.addActionListener(x -> addBatchNumbers("customers", 0));
+        batchNumbersBand.addCommandButton(addBatchNumbersForCustomersButton, RibbonElementPriority.TOP);
+        JCommandButton addBatchNumbersForSuppliersButton = createCommandButton("Add Batch Numbers For Suppliers");
+        addBatchNumbersForSuppliersButton.addActionListener(x -> addBatchNumbers("suppliers", 0));
+        batchNumbersBand.addCommandButton(addBatchNumbersForSuppliersButton, RibbonElementPriority.TOP);
+        JCommandButton viewBatchNumbersForCustomersButton = createCommandButton("View Batch Numbers For Customers");
+        viewBatchNumbersForCustomersButton.addActionListener(x -> viewBatchNumbers("customers"));
+        batchNumbersBand.addCommandButton(viewBatchNumbersForCustomersButton, RibbonElementPriority.TOP);
+        JCommandButton viewBatchNumbersForSuppliersButton = createCommandButton("View Batch Numbers For Suppliers");
+        viewBatchNumbersForSuppliersButton.addActionListener(x -> viewBatchNumbers("suppliers"));
+        batchNumbersBand.addCommandButton(viewBatchNumbersForSuppliersButton, RibbonElementPriority.TOP);
+        JCommandButton deleteBatchNumberForCustomersButton = createCommandButton("Delete Batch Number For Customer");
+        deleteBatchNumberForCustomersButton.addActionListener(x -> deleteABatchNumber("customers"));
+        batchNumbersBand.addCommandButton(deleteBatchNumberForCustomersButton, RibbonElementPriority.TOP);
+        JCommandButton deleteBatchNumberForSuppliersButton = createCommandButton("Delete Batch Number For Supplier");
+        deleteBatchNumberForSuppliersButton.addActionListener(x -> deleteABatchNumber("suppliers"));
+        batchNumbersBand.addCommandButton(deleteBatchNumberForSuppliersButton, RibbonElementPriority.TOP);
+        frame.getRibbon().addTask(createRibbonTask("Batch Numbers", new JRibbonBand[]{batchNumbersBand}));
         frame.getRibbon().setApplicationMenu(createApplicationMenu());
         frame.setVisible(true);
         //frame.add(ribbon, BorderLayout.NORTH);
@@ -58,12 +75,12 @@ public class AdministrationFrame extends Components
     protected RibbonApplicationMenu createApplicationMenu()
     {
         RibbonApplicationMenu aRibbonApplicationMenu = new RibbonApplicationMenu();
-        aRibbonApplicationMenu.addFooterEntry(createFooterApplicationMenuEntry("Log Out", (x) -> {SwingUtilities.invokeLater(() ->
+        aRibbonApplicationMenu.addFooterEntry(createFooterApplicationMenuEntry("Log Out", x -> {SwingUtilities.invokeLater(() ->
         {
             new WeighBridge();
             frame.dispose();
         });}));
-        aRibbonApplicationMenu.addFooterEntry(createFooterApplicationMenuEntry("Exit", (x) -> System.exit(0)));
+        aRibbonApplicationMenu.addFooterEntry(createFooterApplicationMenuEntry("Exit", x -> System.exit(0)));
         aRibbonApplicationMenu.addMenuEntry(createRibbonMenuEntry("Drivers", "Driver", "drivers"));
         aRibbonApplicationMenu.addMenuEntry(createRibbonMenuEntry("Commodities", "Commodity", "commodities"));
         aRibbonApplicationMenu.addMenuEntry(createRibbonMenuEntry("First Weights", "First Weight", "firstweights"));
@@ -262,7 +279,7 @@ public class AdministrationFrame extends Components
             aPanel.add(aTextField);
         });
         JButton aButton = createButton("Add New Row");
-        aButton.addActionListener((x) ->
+        aButton.addActionListener(x ->
         {
             ArrayList<String> textEntered = new ArrayList<>();
             textFields.forEach(y -> textEntered.add(y.getText()));
@@ -272,33 +289,79 @@ public class AdministrationFrame extends Components
         aPanel.add(aButton);
         addComponent(aPanel);
     }
-    public void addBatchNumbers(String consigneeType)
+    public void editABatchNumber(String consigneeType)
+    {
+        JTable batchNumbersTable = generateTableForBatchNumbers(consigneeType);
+
+    }
+    public void deleteABatchNumber(String consigneeType)
+    {
+        JTable batchNumbersTable = generateTableForBatchNumbers(consigneeType);
+        batchNumbersTable.getSelectionModel().addListSelectionListener(x ->
+        {
+            int userResponse = JOptionPane.showConfirmDialog(null, "Are you sure you wish to delete this batch number?", "Batch Number",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if(userResponse == JOptionPane.OK_OPTION)
+            {
+                anAdministration.deleteSelectedRow("batchnumbers",
+                batchNumbersTable.getModel().getValueAt(batchNumbersTable.getSelectedRow(), 0).toString());
+                deleteABatchNumber(consigneeType);
+            }
+        });
+    }
+    public void viewBatchNumbers(String consigneeType)
+    {
+        addComponent(generateTableForBatchNumbers(consigneeType));
+    }
+    private JTable generateTableForBatchNumbers(String consigneeType)
+    {
+        ArrayList<BatchNumber> availableLoads = anAdministration.getLoadsWithBatchNumbers(consigneeType);
+        ArrayList<String> columnTitles = new ArrayList<>(Arrays.asList("Code", "Date", "Commodity", "Net Weight", "Batch Number"));
+        ArrayList<ArrayList<String>> rowValues = new ArrayList<>();
+        availableLoads.forEach(x -> rowValues.add(new ArrayList<>(Arrays.asList(x.getCode() + "", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(
+        x.getSecondWeight().getDate()), x.getSecondWeight().getFirstWeight().getCommodity().getTitle(), x.getSecondWeight().getNetWeight() + "", x.getBatchNumber()))));
+        JTable aTable = createTable();
+        DefaultTableModel aModel = (DefaultTableModel)aTable.getModel();
+        columnTitles.forEach(x -> aModel.addColumn(x));
+        rowValues.forEach(x -> aModel.addRow(x.toArray()));
+        return aTable;
+    }
+    public void addBatchNumbers(String consigneeType, int currentPosition)
     {
         ArrayList<BatchNumber> availableLoads = anAdministration.getLoadsWithNoBatchNumbers(consigneeType);
-        if(availableLoads.size() > 0)
+        if(availableLoads.size() > currentPosition)
         {
-            JPanel aPanel = createPanelForInputtingBatchNumbers(availableLoads.get(0), 0, availableLoads.size());
+            JPanel aPanel = createPanelForObtainingBatchNumbers(availableLoads.get(currentPosition), currentPosition, availableLoads.size());
             JTextField batchNumberTextField = createTextField("");
             aPanel.add(batchNumberTextField);
             JButton submitButton = createButton("Save Your Batch Number");
             submitButton.addActionListener(x ->
             {
-                availableLoads.get(0).setBatchNumber(batchNumberTextField.getText());
-                //anAdministration.insertNewRow("batchnumbers", );
+                availableLoads.get(currentPosition).setBatchNumber(batchNumberTextField.getText());
+                anAdministration.insertNewBatchNumber(availableLoads.get(currentPosition));
+                addBatchNumbers(consigneeType, currentPosition + 1);
             });
+            aPanel.add(submitButton);
+            addComponent(aPanel);
+        }
+        else
+        {
+            JPanel aPanel = new JPanel(new GridLayout(2, 1));
+            aPanel.add(createProgressBar(0, availableLoads.size(), availableLoads.size()));
+            aPanel.add(createLabel("All Batch Numbers Have Been Inputted Successfully"));
             addComponent(aPanel);
         }
     }
-    private JPanel createPanelForInputtingBatchNumbers(BatchNumber currentBatchNumber, int currentPosition, int totalPositions)
+    private JPanel createPanelForObtainingBatchNumbers(BatchNumber currentBatchNumber, int currentPosition, int totalPositions)
     {
         JPanel aPanel = new JPanel(new GridLayout(10, 1));
         aPanel.add(createProgressBar(0, totalPositions, currentPosition));
         aPanel.add(createLabel("Commodity Title"));
-        aPanel.add(createDisabledTextField(currentBatchNumber.getCommodityTitle()));
+        aPanel.add(createDisabledTextField(currentBatchNumber.getSecondWeight().getFirstWeight().getCommodity().getTitle()));
         aPanel.add(createLabel("Date"));
-        aPanel.add(createDisabledTextField(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(currentBatchNumber.getDate())));
+        aPanel.add(createDisabledTextField(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(currentBatchNumber.getSecondWeight().getDate())));
         aPanel.add(createLabel("Net Weight"));
-        aPanel.add(createDisabledTextField(currentBatchNumber.getNetWeight().toString()));
+        aPanel.add(createDisabledTextField(currentBatchNumber.getSecondWeight().getNetWeight() + ""));
         aPanel.add(createLabel("Batch Number"));
         return aPanel;
     }

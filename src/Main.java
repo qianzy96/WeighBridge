@@ -1,3 +1,4 @@
+import Frames.BrowserFrame;
 import Frames.WeighBridgeFrame;
 import Models.WeighBridge;
 
@@ -25,11 +26,15 @@ public class Main
             AdministratorLogOn anAdministrationLogOn = new AdministratorLogOn();
             anAdministrationLogOn.createLogOnDialogBox();
         });*/
-        SwingUtilities.invokeLater(() ->
+        /*SwingUtilities.invokeLater(() ->
         {
             new WeighBridgeFrame();
             //WeighBridge aWeighBridge = new WeighBridge();
             //aWeighBridge.selectWeightType();
+        });*/
+        SwingUtilities.invokeLater(() ->
+        {
+            new BrowserFrame();
         });
     }
 }

@@ -1,9 +1,13 @@
 package Utilities;
 
+import com.teamdev.jxbrowser.chromium.JSONString;
+
 import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -108,5 +112,17 @@ public class Utilities
         for(char anInputCharacter : inputCharacters)
             output += anInputCharacter;
         return output;
+    }
+    public static JSONString convertHashMapToJSON(HashMap<String, String> aHashMap)
+    {
+        StringBuilder formattedOutput = new StringBuilder("{");
+        for(Map.Entry<String, String> anEntry : aHashMap.entrySet())
+        {
+            formattedOutput.append(anEntry.getKey());
+            formattedOutput.append(" : ");
+            formattedOutput.append(anEntry.getValue());
+        }
+        formattedOutput.append("}");
+        return new JSONString(formattedOutput.toString());
     }
 }
