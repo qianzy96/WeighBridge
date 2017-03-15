@@ -50,7 +50,6 @@ public class Database
             addParametersToSQLStatement(selectedParameters, sqlStatement);
             if(columnTitleForSorting.length() > 0)
                 sqlStatement.append(" order by " + columnTitleForSorting + " asc");
-            System.out.println("SQL STATEMENT: " + sqlStatement.toString());
             ArrayList<ArrayList<String>> retrievedRows = retrieveResults(sqlStatement.toString(), connection.createStatement());
             currentStatement.close();
             connection.close();

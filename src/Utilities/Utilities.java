@@ -4,10 +4,7 @@ import com.teamdev.jxbrowser.chromium.JSONString;
 
 import javax.swing.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,11 +115,16 @@ public class Utilities
         StringBuilder formattedOutput = new StringBuilder("{");
         for(Map.Entry<String, String> anEntry : aHashMap.entrySet())
         {
-            formattedOutput.append(anEntry.getKey());
+            formattedOutput.append("\"" + anEntry.getKey() + "\"");
             formattedOutput.append(" : ");
-            formattedOutput.append(anEntry.getValue());
+            formattedOutput.append("\"" + anEntry.getValue().replace("\"", "\\\"") + "\", ");
         }
-        formattedOutput.append("}");
-        return new JSONString(formattedOutput.toString());
+        return new JSONString(formattedOutput.substring(0, formattedOutput.length() - 2) + "}");
+    }
+    public static JSONString convertListToJavaScriptArray(List<String> aList)
+    {
+        StringBuilder formattedOutput = new StringBuilder("[");
+        aList.forEach(x -> formattedOutput.append("\'" + x + "\', "));
+        return new JSONString(formattedOutput.substring(0, formattedOutput.length() - 2) + "]");
     }
 }

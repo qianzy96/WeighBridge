@@ -26,7 +26,7 @@ public class AdministrationFrame extends Components
     }
     private void createRibbon()
     {
-        frame = createRibbonFrame("Administration Portal");
+        frame = createRibbonFrame("AdministrationPage Portal");
         createReportsTaskOnRibbon();
         createSpecifiedTaskOnRibbon();
         createTaskOnRibbon("Driver", "Drivers", "drivers");

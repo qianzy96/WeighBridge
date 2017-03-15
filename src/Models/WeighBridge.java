@@ -39,12 +39,26 @@ public class WeighBridge extends Components
         docketTypes.forEach(x -> docketTypesObjects.add(new DocketType(Integer.parseInt(x.get(0)), x.get(1))));
         return docketTypesObjects;
     }
+    public DocketType getDocketType(int docketTypeID)
+    {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("code", Integer.toString(docketTypeID));
+        ArrayList<ArrayList<String>> docketTypes = main.getTableRows("dockettypes", parameters, new ArrayList<>(), "dockettype");
+        return new DocketType(Integer.parseInt(docketTypes.get(0).get(0)), docketTypes.get(0).get(1));
+    }
     public ArrayList<Consignee> getConsignees(String tableName)
     {
         ArrayList<Consignee> consigneesObjects = new ArrayList<>();
         ArrayList<ArrayList<String>> consignees = main.getTableRows(tableName, new HashMap<>(), new ArrayList<>(), "lastname");
         consignees.forEach(x -> consigneesObjects.add(new Consignee(Integer.parseInt(x.get(0)), x.get(1), x.get(2))));
         return consigneesObjects;
+    }
+    public Consignee getConsignee(int consigneeID, String tableName)
+    {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("code", Integer.toString(consigneeID));
+        ArrayList<ArrayList<String>> consigneeTypes = main.getTableRows(tableName, parameters, new ArrayList<>(), "lastname");
+        return new Consignee(Integer.parseInt(consigneeTypes.get(0).get(0)), consigneeTypes.get(0).get(1), consigneeTypes.get(0).get(2));
     }
     public ArrayList<Commodity> getCommodities()
     {
@@ -53,7 +67,20 @@ public class WeighBridge extends Components
         commodities.forEach(x -> commoditiesObjects.add(new Commodity(Integer.parseInt(x.get(0)), x.get(1))));
         return commoditiesObjects;
     }
-
+    public Commodity getCommodity(int commodityID)
+    {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("code", Integer.toString(commodityID));
+        ArrayList<ArrayList<String>> commodity = main.getTableRows("commodities", parameters, new ArrayList<>(), "title");
+        return new Commodity(Integer.parseInt(commodity.get(0).get(0)), commodity.get(0).get(1));
+    }
+    public Driver getDriver(int driverID)
+    {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("code", Integer.toString(driverID));
+        ArrayList<ArrayList<String>> driverTypes = main.getTableRows("drivers", new HashMap<>(), new ArrayList<>(), "lastname");
+        return new Driver(Integer.parseInt(driverTypes.get(0).get(0)), driverTypes.get(0).get(1), driverTypes.get(0).get(2));
+    }
     public ArrayList<Driver> getDrivers()
     {
         ArrayList<Driver> driverObjects = new ArrayList<>();
@@ -69,19 +96,21 @@ public class WeighBridge extends Components
         selectedDriver = aDriver;
         return selectedDriver;
     }
-    public void insertNewCommodity(String commodityTitle)
+    public Commodity insertNewCommodity(String commodityTitle)
     {
         int maximumValue = main.getMaxValueOfColumn("commodities", "code");
         Commodity aCommodity = new Commodity(maximumValue + 1, commodityTitle);
         main.insertTableRow("commodities", aCommodity.toList());
         selectedCommodity = aCommodity;
+        return selectedCommodity;
     }
-    public void insertNewConsignee(String firstName, String lastName, String consigneeTable)
+    public Consignee insertNewConsignee(String firstName, String lastName, String consigneeTable)
     {
         int maximumValue = main.getMaxValueOfColumn(consigneeTable, "code");
         Consignee aConsignee = new Consignee(maximumValue + 1, firstName, lastName);
         main.insertTableRow(consigneeTable, aConsignee.toList());
         selectedConsignee = aConsignee;
+        return selectedConsignee;
     }
     public void insertNewFirstWeight()
     {

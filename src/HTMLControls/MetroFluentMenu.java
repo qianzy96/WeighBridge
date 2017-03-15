@@ -4,33 +4,46 @@ import com.hp.gagawa.java.elements.Li;
 import com.hp.gagawa.java.elements.Ul;
 
 import java.util.ArrayList;
+import java.util.List;
+
 public class MetroFluentMenu extends MetroComponent
 {
     private ArrayList<String> titles;
+    private int currentTabPosition;
     private String title;
+    private String titleOnClickEvent;
+    private String id;
     private Div tabsContent;
-    public MetroFluentMenu(String title, ArrayList<String> titles)
+    public MetroFluentMenu(String id, String title, String titleOnClickEvent, ArrayList<String> titles)
     {
+        this.id = id;
         this.title = title;
+        this.titleOnClickEvent = titleOnClickEvent;
         this.titles = titles;
+        this.currentTabPosition = 0;
         parentElement = createDivElement("fluent-menu", "fluentmenu");
         Ul tabsHolder = createUlElement("tabs-holder");
         parentElement.appendChild(tabsHolder);
-        Li specialListItem = createLiElement("special");
+        Li specialListItem = createLiElement("special", titleOnClickEvent);
         tabsHolder.appendChild(specialListItem);
         specialListItem.appendChild(createAElement("#", title));
-        int counter = 0;
         for(String aTitle : titles)
         {
             Li activeListItem = createLiElement("active");
             tabsHolder.appendChild(activeListItem);
-            activeListItem.appendChild(createAElement("#tabs_" + counter++, aTitle));
+            activeListItem.appendChild(createAElement("#" + id + "_" + currentTabPosition, aTitle, "",
+            "displayPanel('" + id + "_content', " + currentTabPosition++ + ");"));
         }
-        tabsContent = createDivElement("tabs-content");
+        currentTabPosition = 0;
+        tabsContent = createDivElement("tabs-content", "", "", id + "_content");
         parentElement.appendChild(tabsContent);
     }
-    public void addPanel(MetroFluentMenuPanel aPanel)
+    public void addPanelGroups(List<MetroFluentMenuPanelGroup> groups)
     {
-        tabsContent.appendChild(aPanel.toHTML());
+        System.out.println("CURRENT TAB POSITION: " + currentTabPosition);
+        StringBuilder controlText = new StringBuilder("<div class=\"tab-panel\" id=\"" + id + "_" + currentTabPosition++ + "\">");
+        for(MetroFluentMenuPanelGroup aMenuPanelGroup : groups)
+            controlText.append(aMenuPanelGroup.toString());
+        tabsContent.appendText(controlText.toString());
     }
 }

@@ -32,6 +32,16 @@ public class User
         this.emailAddress = userAttributes.get(5);
         this.phoneNumber = userAttributes.get(6);
     }
+    public User()
+    {
+        this.code = 0;
+        this.username = "";
+        this.password = "";
+        this.firstName = "";
+        this.lastName = "";
+        this.emailAddress = "";
+        this.phoneNumber = "";
+    }
     public int getCode()
     {
         return code;

@@ -17,7 +17,7 @@ public class Main
         tableTitles.forEach(x -> System.out.println(x));*/
         /*SwingUtilities.invokeLater(() ->
         {
-            Models.Administration anAdministration = new Models.Administration();
+            Models.AdministrationPage anAdministration = new Models.AdministrationPage();
             anAdministration.createRibbon();
             //aFrame.add(aComponent.createTable(""));
         });*/

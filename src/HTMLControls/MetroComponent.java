@@ -11,6 +11,10 @@ public class MetroComponent
     {
         return parentElement;
     }
+    public String toString()
+    {
+        return parentElement.write();
+    }
     protected Table createTableElement(String className, String dataRole, String id, Boolean allowDataSearching)
     {
         Table aTableTag = new Table();
@@ -37,6 +41,13 @@ public class MetroComponent
     protected Tr createTableRowElement()
     {
         Tr aTableRowTag = new Tr();
+        return aTableRowTag;
+    }
+    protected Tr createTableRowElement(String onClickEvent)
+    {
+        Tr aTableRowTag = new Tr();
+        if(onClickEvent.length() > 0)
+            aTableRowTag.setAttribute("onclick", onClickEvent);
         return aTableRowTag;
     }
     protected Th createTableHeadCellElement(String textualContent)
@@ -122,6 +133,15 @@ public class MetroComponent
             aPTag.appendText(paragraphText);
         return aPTag;
     }
+    protected Li createLiElement(String className, String onClickEvent)
+    {
+        Li aLiTag = new Li();
+        if(className.length() > 0)
+            aLiTag.setAttribute("class", className);
+        if(onClickEvent.length() > 0)
+            aLiTag.setAttribute("onclick", onClickEvent);
+        return aLiTag;
+    }
     protected Li createLiElement(String className)
     {
         Li aLiTag = new Li();
@@ -152,6 +172,17 @@ public class MetroComponent
             anInputTag.setType(inputType);
         if(inputID.length() > 0)
             anInputTag.setId(inputID);
+        return anInputTag;
+    }
+    protected Input createInputElement(String inputType, String inputID, String inputText)
+    {
+        Input anInputTag = new Input();
+        if(inputType.length() > 0)
+            anInputTag.setType(inputType);
+        if(inputID.length() > 0)
+            anInputTag.setId(inputID);
+        if(inputText.length() > 0)
+            anInputTag.setValue(inputText);
         return anInputTag;
     }
     protected Button createButtonElement(String className, String onClickEvent, String buttonTitle, String styleContent)

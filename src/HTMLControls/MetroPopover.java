@@ -1,4 +1,5 @@
 package HTMLControls;
+import com.hp.gagawa.java.elements.Div;
 public class MetroPopover extends MetroComponent
 {
     private String backgroundColour;
@@ -10,6 +11,9 @@ public class MetroPopover extends MetroComponent
         this.backgroundColour = backgroundColour;
         this.markerPosition = markerPosition;
         parentElement = createDivElement("popover marker-on-" + markerPosition + " bg-" + backgroundColour);
-        parentElement.appendChild(createDivElement("fg-white", "", popoverText));
+        Div messageElement = createDivElement("fg-white", "", popoverText);
+        messageElement.setAttribute("align", "center");
+        parentElement.appendChild(messageElement);
+        //parentElement.appendChild(createDivElement("fg-white", "", popoverText));
     }
 }

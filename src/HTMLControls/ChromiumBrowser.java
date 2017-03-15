@@ -1,5 +1,5 @@
 package HTMLControls;
-import HTMLPages.LogOn;
+import HTMLPages.*;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.JSValue;
 import com.teamdev.jxbrowser.chromium.events.*;
@@ -41,7 +41,12 @@ public class ChromiumBrowser
                 {
                     Browser aBrowser = finishLoadingEvent.getBrowser();
                     JSValue value = aBrowser.executeJavaScriptAndReturnValue("window");
-                    value.asObject().setProperty("LogOn", new LogOn());
+                    value.asObject().setProperty("LogOn", new LogOnPage());
+                    value.asObject().setProperty("Home", new HomePage());
+                    value.asObject().setProperty("Administration", new AdministrationPage());
+                    value.asObject().setProperty("Registration", new RegistrationPage());
+                    value.asObject().setProperty("Portal", new PortalPage());
+                    value.asObject().setProperty("WeighBridge", new WeighBridgePage());
                 }
             }
 

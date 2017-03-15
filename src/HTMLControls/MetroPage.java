@@ -1,20 +1,30 @@
 package HTMLControls;
 
+import HTMLPages.HomePage;
 import com.hp.gagawa.java.Document;
 import com.hp.gagawa.java.DocumentType;
 
 import javax.swing.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 public class MetroPage extends MetroComponent
 {
+    private String htmlLocation;
+    private String htmlSource;
     public MetroPage()
     {
+        htmlSource = "";
+        htmlLocation = "file:///C:/Users/user/IdeaProjects/WeighBridge/index.html";
         createPage();
+    }
+    public String toString()
+    {
+        return htmlSource;
+    }
+    public String getHtmlLocation()
+    {
+        return htmlLocation;
     }
     private void createPage()
     {
@@ -32,7 +42,7 @@ public class MetroPage extends MetroComponent
         aDocument.head.appendChild(createLinkToScript("js/metro.js"));
         aDocument.head.appendChild(createLinkToScript("js/jquery.dataTables.min.js"));
         aDocument.head.appendChild(createLinkToScript("js/index.js"));
-        MetroAccordion anAccordion = new MetroAccordion();
+        /*MetroAccordion anAccordion = new MetroAccordion();
         MetroTextField usernameTextField = new MetroTextField("Your username goes here", "user", "text", "username");
         MetroTextField passwordTextField = new MetroTextField("Your password goes here", "lock", "password", "password");
         MetroCommandButton logInButton = new MetroCommandButton("Log In", "Click Here To Securely Log In", "enter",
@@ -43,7 +53,9 @@ public class MetroPage extends MetroComponent
         aLayout.addRow(new ArrayList<>(Collections.singletonList(usernameTextField)), new ArrayList<>(Arrays.asList(0, 12, 0)));
         aLayout.addRow(new ArrayList<>(Collections.singletonList(passwordTextField)), new ArrayList<>(Arrays.asList(0, 12, 0)));
         aLayout.addRow(new ArrayList<>(Arrays.asList(logInButton, cancelButton)), new ArrayList<>(Arrays.asList(1, 4, 1, 1, 4, 1)));
-        anAccordion.addFrame("Log On", aLayout, "enter");
+        anAccordion.addFrame("Log On", aLayout, "enter");*/
+        HomePage aHome = new HomePage();
+        MetroUpdatePanel mainUpdatePanel = new MetroUpdatePanel("mainUpdatePanel", aHome.createHomePage());
         /*MetroFluentMenu aFluentMenu = new MetroFluentMenu("About", new ArrayList<>(Arrays.asList("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5")));
         MetroFluentButton aFluentButton = new MetroFluentButton("A Button", "database", "alert('Button Clicked');");
         ArrayList<MetroFluentButton> buttons = new ArrayList<>();
@@ -78,9 +90,9 @@ public class MetroPage extends MetroComponent
         mainLayout.addRow(new ArrayList<>(Collections.singletonList(aSideBar)), new ArrayList<>(Arrays.asList(0, 12, 0)));
         MetroHeading aHeading = new MetroHeading("Sample", "Sample Text");
         mainLayout.addRow(new ArrayList<>(Collections.singletonList(aHeading)), new ArrayList<>(Arrays.asList(0, 12, 0)));
-        MetroTile aFirstTile = new MetroTile("alert('HI');", "cyan", "Home", "home", "1");
-        MetroTile aSecondTile = new MetroTile("alert('HI');", "cyan", "Home", "home", "2");
-        MetroTile aThirdTile = new MetroTile("alert('HI');", "cyan", "Home", "home", "3");
+        MetroTile aFirstTile = new MetroTile("alert('HI');", "cyan", "HomePage", "home", "1");
+        MetroTile aSecondTile = new MetroTile("alert('HI');", "cyan", "HomePage", "home", "2");
+        MetroTile aThirdTile = new MetroTile("alert('HI');", "cyan", "HomePage", "home", "3");
         mainLayout.addRow(new ArrayList<>(Arrays.asList(aFirstTile, aSecondTile, aThirdTile)), new ArrayList<>(Arrays.asList(0, 3, 1, 0, 3, 1, 0, 3, 1)));
         MetroTileWithControl aFourthTile = new MetroTileWithControl("alert('HI');", aSideBar, "");
         MetroTileWithControl aFifthTile = new MetroTileWithControl("alert('HI');", aSideBar, "");
@@ -103,7 +115,7 @@ public class MetroPage extends MetroComponent
         mainLayout.addRow(new ArrayList<>(Collections.singletonList(aListView)), new ArrayList<>(Arrays.asList(0, 12, 0)));
         MetroAppBar anAppBar = new MetroAppBar();
         for(int counter = 0; counter < 5; counter++)
-            anAppBar.addItem("Home", "home", "alert('HOME PRESSED');");
+            anAppBar.addItem("HomePage", "home", "alert('HOME PRESSED');");
         mainLayout.addRow(new ArrayList<>(Collections.singletonList(anAppBar)), new ArrayList<>(Arrays.asList(0, 12, 0)));
         MetroBreadCrumbs aBreadCrumbs = new MetroBreadCrumbs(new ArrayList<>(Arrays.asList("Item 1", "Item 2", "Item 3")));
         mainLayout.addRow(new ArrayList<>(Collections.singletonList(aBreadCrumbs)), new ArrayList<>(Arrays.asList(0, 12, 0)));
@@ -129,7 +141,7 @@ public class MetroPage extends MetroComponent
         aDocument.body.appendChild(aDataTable.toHTML());
         aDocument.body.appendChild(mainLayout.toHTML());
         aDocument.body.appendChild(aWizard.toHTML());*/
-        aDocument.body.appendChild(anAccordion.toHTML());
+        aDocument.body.appendChild(mainUpdatePanel.toHTML());
         try
         {
             BufferedWriter aWriter = new BufferedWriter(new FileWriter("index.html"));
@@ -141,5 +153,6 @@ public class MetroPage extends MetroComponent
         {
             JOptionPane.showMessageDialog(null, error);
         }
+        htmlSource = aDocument.write();
     }
 }

@@ -28,7 +28,7 @@ public class MetroAppBar extends MetroComponent
                     <a class="app-bar-element branding">Metro UI CSS</a>
                     <span class="app-bar-divider"></span>
                     <ul class="app-bar-menu">
-                        <li><a href="">Home</a></li>
+                        <li><a href="">HomePage</a></li>
                         <li>
                             <a href="" class="dropdown-toggle">Products</a>
                             <ul class="d-menu" data-role="dropdown">

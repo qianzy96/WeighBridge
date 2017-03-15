@@ -12,7 +12,7 @@ public class MetroDataTable extends MetroComponent
     private String id;
     private ArrayList<String> tableRowTitles;
     private ArrayList<ArrayList<String>> tableRowContents;
-    public MetroDataTable(String id, ArrayList<String> tableRowTitles, ArrayList<ArrayList<String>> tableRowContents)
+    public MetroDataTable(String id, ArrayList<String> tableRowTitles, ArrayList<ArrayList<String>> tableRowContents, ArrayList<String> tableRowClickEvents)
     {
         this.id = id;
         this.tableRowTitles = tableRowTitles;
@@ -33,11 +33,15 @@ public class MetroDataTable extends MetroComponent
         {
             Tbody aTableBody = createTableBodyElement();
             aTable.appendChild(aTableBody);
+            int counter = 0;
             for(ArrayList<String> aTableRow: tableRowContents)
             {
                 if(aTableRow.size() > 0)
                 {
                     Tr aTableRowTag = createTableRowElement();
+                    if(tableRowClickEvents.size() > counter)
+                        aTableRowTag = createTableRowElement(tableRowClickEvents.get(counter));
+                    counter++;
                     aTableBody.appendChild(aTableRowTag);
                     for(String aTableCell: aTableRow)
                         aTableRowTag.appendChild(createTableRowCellElement(aTableCell));

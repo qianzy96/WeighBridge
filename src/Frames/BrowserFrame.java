@@ -12,7 +12,7 @@ public class BrowserFrame extends Components
     {
         //browser = new ChromiumBrowser("", aPage.toString());
         MetroPage aPage = new MetroPage();
-        browser = new ChromiumBrowser("file:///C:/Users/user/IdeaProjects/WeighBridge/index.html", "");
+        browser = new ChromiumBrowser(aPage.getHtmlLocation(), "");
         addMenu();
     }
     private void addMenu()
