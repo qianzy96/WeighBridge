@@ -2,7 +2,7 @@ package Models;
 import Entities.*;
 import Frames.Components;
 import Database.Database;
-import Utilities.Utilities;
+import Utilities.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -46,6 +46,48 @@ public class Administration extends Components
     public void insertNewRow(String tableName, ArrayList<String> parameters)
     {
         main.insertTableRow(tableName, parameters);
+    }
+    public Email getEmailSettings()
+    {
+        HashMap<String, String> emailSettings = new HashMap<>();
+        HashMap<String, String> selectedParameters = new HashMap<>();
+        selectedParameters.put("title", "mail.");
+        ArrayList<ArrayList<String>> tableContents = main.getTableRows("settings", selectedParameters,
+        new ArrayList<>(Arrays.asList("title", "value")), "");
+        for(ArrayList<String> aTableRow : tableContents)
+            emailSettings.put(aTableRow.get(0), aTableRow.get(1));
+        Email anEmail = new Email(emailSettings.get("mail.username"), emailSettings.get("mail.password"), emailSettings.get("mail.smtp.auth"),
+        emailSettings.get("mail.smtp.starttls.enable"), emailSettings.get("mail.smtp.host"), emailSettings.get("mail.smtp.port"));
+        return anEmail;
+    }
+    public void saveEmailSettings(String username, String password, String smtpAuth, String smtpStartTlsEnable, String smtpHost, String smtpPort)
+    {
+        updateSettingInDatabase(5, username);
+        updateSettingInDatabase(6, password);
+        updateSettingInDatabase(7, smtpAuth);
+        updateSettingInDatabase(8, smtpStartTlsEnable);
+        updateSettingInDatabase(9, smtpHost);
+        updateSettingInDatabase(10, smtpPort);
+    }
+    public void saveSerialPortSettings(String portName, String baudRate, String dataBits, String stopBits, String parity)
+    {
+        updateSettingInDatabase(11, portName);
+        updateSettingInDatabase(12, baudRate);
+        updateSettingInDatabase(13, dataBits);
+        updateSettingInDatabase(14, stopBits);
+        updateSettingInDatabase(15, parity);
+    }
+    public ObtainWeight getSerialPortSettings()
+    {
+        return new ObtainWeight();
+    }
+    private void updateSettingInDatabase(int uniqueIdentifier, String updatedValue)
+    {
+        HashMap<String, String> selectedParameters = new HashMap<>();
+        selectedParameters.put("code", uniqueIdentifier + "");
+        HashMap<String, String> updatedParameters = new HashMap<>();
+        updatedParameters.put("value", updatedValue);
+        main.updateTableRow("settings", updatedParameters, selectedParameters);
     }
     public ArrayList<ArrayList<String>> getSecondWeightsCustomersInformation()
     {

@@ -158,6 +158,7 @@ public class Database
                 else
                     preparedStatement.setString(counter, tableRowValues.get(counter - 1));
             }
+            System.out.println("PREPARED STATEMENT: " + preparedStatement.toString());
             preparedStatement.executeUpdate();
             preparedStatement.close();
             connection.close();

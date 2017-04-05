@@ -47,6 +47,8 @@ public class ChromiumBrowser
                     value.asObject().setProperty("Registration", new RegistrationPage());
                     value.asObject().setProperty("Portal", new PortalPage());
                     value.asObject().setProperty("WeighBridge", new WeighBridgePage());
+                    value.asObject().setProperty("Calculator", new CalculatorPage());
+                    value.asObject().setProperty("Dashboard", new DashboardPage());
                 }
             }
 

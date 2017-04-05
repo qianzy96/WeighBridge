@@ -26,9 +26,13 @@ public class PortalPage
     {
         MetroAccordion portalAccordion = new MetroAccordion();
         MetroLayout portalLayout = new MetroLayout();
+        CalculatorPage calculatorPage = new CalculatorPage();
+        calculatorPage.setUser(user);
+        DashboardPage dashboardPage = new DashboardPage();
+        dashboardPage.setUser(user);
         MetroHeading portalHeading = new MetroHeading("Logged In As " + user.getUsername(), "");
-        MetroTile calculatorTile = new MetroTile("", "cyan", "Calculator", "calculator2", "");
-        MetroTile pricesTile = new MetroTile("", "cyan", "Prices", "eur", "");
+        MetroTile calculatorTile = new MetroTile("getCalculatorPage();", "cyan", "Calculator", "calculator2", "");
+        MetroTile pricesTile = new MetroTile("createDashboardPage();", "cyan", "Prices", "eur", "");
         MetroTile editProfileTile = new MetroTile("getEditUserSettingsPage();", "cyan", "Edit Profile", "pencil", "");
         MetroTile logOutTile = new MetroTile("loadHTML5Edition();", "cyan", "Log Out", "exit", "");
         portalLayout.addRow(portalHeading);

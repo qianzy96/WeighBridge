@@ -333,7 +333,7 @@ public class WeighBridgePage
             for(String aDocketComponent: anAvailableDocket)
                 System.out.println("DOCKET COMPONENT: " + aDocketComponent);
             aWeighBridge.retrieveParametersForSelectedSecondWeight(anAvailableDocket.get(1), anAvailableDocket.get(2), anAvailableDocket.get(5), anAvailableDocket.get(6));
-
+            secondWeighingTiles.add(new MetroTile("", "cyan", aWeighBridge.getCaptionTitle(), "truck", ""));
         }
         secondWeighingLayout.addRow(secondWeighingProgressBar);
         secondWeighingLayout.addEmptyRows(2);
@@ -344,4 +344,23 @@ public class WeighBridgePage
         parameters.put("html", secondWeighingAccordion.toString());
         return Utilities.convertHashMapToJSON(parameters);
     }
+    public JSONString completeSecondWeight(int seoondWeightID)
+    {
+        HashMap<String, String> parameters = new HashMap<>();
+        return Utilities.convertHashMapToJSON(parameters);
+    }
+            /*
+        firstWeightsAwaitingSecondWeight.forEach(x ->
+        {
+            aWeighBridge.retrieveParametersForSelectedSecondWeight(x.get(1), x.get(2), x.get(5), x.get(6));
+            JButton currentButton = createTile(aWeighBridge.getCaptionTitle(), "", firstWeightsAwaitingSecondWeight.size());
+            currentButton.addActionListener((y) ->
+            {
+                aWeighBridge.insertNewSecondWeight(x.get(0), x.get(3), x.get(4));
+                aWeighBridge.generateReport();
+                selectDocket();
+            });
+            secondWeightsPanel.add(currentButton);
+        });
+        */
 }

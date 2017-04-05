@@ -21,7 +21,7 @@ public class MetroFluentMenu extends MetroComponent
         this.titleOnClickEvent = titleOnClickEvent;
         this.titles = titles;
         this.currentTabPosition = 0;
-        parentElement = createDivElement("fluent-menu", "fluentmenu");
+        parentElement = createDivElement("fluent-menu", "fluentmenu", "", id);
         Ul tabsHolder = createUlElement("tabs-holder");
         parentElement.appendChild(tabsHolder);
         Li specialListItem = createLiElement("special", titleOnClickEvent);
@@ -31,8 +31,11 @@ public class MetroFluentMenu extends MetroComponent
         {
             Li activeListItem = createLiElement("active");
             tabsHolder.appendChild(activeListItem);
-            activeListItem.appendChild(createAElement("#" + id + "_" + currentTabPosition, aTitle, "",
-            "displayPanel('" + id + "_content', " + currentTabPosition++ + ");"));
+            //activeListItem.appendChild(createAElement("#" + id + "_" + currentTabPosition, aTitle, "",
+            //"displayPanel('" + id + "_content', " + currentTabPosition++ + ");"));
+            //activeListItem.appendChild(createAElement("#" + id + "_" + currentTabPosition, aTitle, "",
+            //"displayPanel(" + currentTabPosition++ + ");"));
+            activeListItem.appendChild(createAElement("#" + id + "_" + currentTabPosition, aTitle));
         }
         currentTabPosition = 0;
         tabsContent = createDivElement("tabs-content", "", "", id + "_content");
@@ -40,7 +43,6 @@ public class MetroFluentMenu extends MetroComponent
     }
     public void addPanelGroups(List<MetroFluentMenuPanelGroup> groups)
     {
-        System.out.println("CURRENT TAB POSITION: " + currentTabPosition);
         StringBuilder controlText = new StringBuilder("<div class=\"tab-panel\" id=\"" + id + "_" + currentTabPosition++ + "\">");
         for(MetroFluentMenuPanelGroup aMenuPanelGroup : groups)
             controlText.append(aMenuPanelGroup.toString());

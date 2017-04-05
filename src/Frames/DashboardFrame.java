@@ -13,6 +13,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
+
 public class DashboardFrame extends Components
 {
     private JRibbonFrame frame;
@@ -98,15 +100,7 @@ public class DashboardFrame extends Components
         JTable aTable = createTable();
         DefaultTableModel aModel = (DefaultTableModel)aTable.getModel();
         aCommodity.getHeadings().forEach(x -> aModel.addColumn(x));
-        ArrayList<ArrayList<String>> formattedCommodityPrices = new ArrayList<>();
-        for(Map.Entry<String, ArrayList<String>> aCommodityPrices : aCommodity.getPrices().entrySet())
-        {
-            ArrayList<String> commodityPrices = new ArrayList<>();
-            commodityPrices.add(aCommodityPrices.getKey());
-            for(String aPrice : aCommodityPrices.getValue())
-                commodityPrices.add(aPrice);
-            formattedCommodityPrices.add(commodityPrices);
-        }
+        ArrayList<ArrayList<String>> formattedCommodityPrices = aDashboard.getListOfCommodityPricesForSelectedCommodity(aCommodity, false);
         formattedCommodityPrices.forEach(x -> aModel.addRow(x.toArray()));
         return aTable;
     }

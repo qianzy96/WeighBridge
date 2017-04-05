@@ -6,6 +6,7 @@ import com.hp.gagawa.java.elements.Thead;
 import com.hp.gagawa.java.elements.Tr;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MetroDataTable extends MetroComponent
 {
@@ -34,7 +35,7 @@ public class MetroDataTable extends MetroComponent
             Tbody aTableBody = createTableBodyElement();
             aTable.appendChild(aTableBody);
             int counter = 0;
-            for(ArrayList<String> aTableRow: tableRowContents)
+            for(List<String> aTableRow: tableRowContents)
             {
                 if(aTableRow.size() > 0)
                 {

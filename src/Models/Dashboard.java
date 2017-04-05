@@ -11,18 +11,47 @@ import java.util.*;
 
 public class Dashboard extends Components
 {
-    private HashMap<String, CommodityPrices> commodityPrices;
+    private LinkedHashMap<String, CommodityPrices> commodityPrices;
     private String fileName;
     private String userID;
     public Dashboard(String userID)
     {
-        this.commodityPrices = new HashMap<>();
+        this.commodityPrices = new LinkedHashMap<>();
         this.fileName = "";
         this.userID = userID;
     }
-    public HashMap<String, CommodityPrices> getCommodityPrices()
+    public LinkedHashMap<String, CommodityPrices> getCommodityPrices()
     {
         return commodityPrices;
+    }
+    public ArrayList<ArrayList<String>> getListOfCommodityPricesForSelectedCommodity(CommodityPrices currentCommodityPrices, boolean includeNumericIndex)
+    {
+        ArrayList<ArrayList<String>> tableRows = new ArrayList<>();
+        int counter = 1;
+        for(Map.Entry<String, ArrayList<String>> aCurrentPrice: currentCommodityPrices.getPrices().entrySet())
+        {
+            ArrayList<String> currentTableRow = new ArrayList<>();
+            if(includeNumericIndex)
+                currentTableRow.add(counter++ + "");
+            currentTableRow.add(aCurrentPrice.getKey());
+            aCurrentPrice.getValue().forEach(x -> currentTableRow.add(formatPrice(x)));
+            tableRows.add(currentTableRow);
+        }
+        return tableRows;
+    }
+    public List<String> getMonths(CommodityPrices currentCommodityPrices)
+    {
+        List<String> months = new ArrayList<>();
+        for(String aMonth: currentCommodityPrices.getPrices().keySet())
+            months.add(aMonth);
+        return months;
+    }
+    public List<Double> getLastPrices(CommodityPrices currentCommodityPrices)
+    {
+        List<Double> lastPrices = new ArrayList<>();
+        for(ArrayList<String> aLastPrice: currentCommodityPrices.getPrices().values())
+            lastPrices.add(Double.parseDouble(formatPrice(aLastPrice.get(0))));
+        return lastPrices;
     }
     public String getUserID()
     {
@@ -75,7 +104,7 @@ public class Dashboard extends Components
         }
         return dataPoints;
     }
-    public void generatePDFFile()
+    public String generatePDFFile()
     {
         fileName = "Prices/Prices_" + new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss").format(new Date()) + ".pdf";
         Report aReport = new Report(fileName);
@@ -108,14 +137,16 @@ public class Dashboard extends Components
             }
         }
         aReport.addContent(paragraphs);
+        return "file:///" + System.getProperty("user.dir").replace("\\", "/") + "/" + fileName;
     }
-    public void emailPDFFile(String emailAddress)
+    public boolean emailPDFFile(String emailAddress)
     {
         if(fileName.length() == 0)
             generatePDFFile();
-        Email anEmail = new Email("stephencullinan1991@gmail.com", "TiobraidArann2016");
-        anEmail.sendMessage(emailAddress, "Prices Report","Dear Sir/Madam, Please find attached the report on the prices. If you have any further " +
-        "questions please do not hesitate to contact me. Yours sincerely, Stephen Cullinan", "prices/" + fileName, fileName);
+        //Email anEmail = new Email("stephencullinan1991@gmail.com", "TiobraidArann2016");
+        Email anEmail = new Email();
+        return anEmail.sendMessage(emailAddress, "Prices Report","Dear Sir/Madam, Please find attached the report on the prices. If you have any " +
+        "further questions please do not hesitate to contact me. Yours sincerely, Stephen Cullinan", "prices/" + fileName, fileName);
     }
     public void printPDFFile()
     {
@@ -131,6 +162,8 @@ public class Dashboard extends Components
         aPrice = aPrice.replace("n/a", "0.0");
         if (aPrice.length() == 0)
             aPrice = "0.0";
+        /*if (aPrice.equals("0.0"))
+            aPrice = "";*/
         return aPrice;
     }
 }

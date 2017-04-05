@@ -41,6 +41,10 @@ public class MetroPage extends MetroComponent
         aDocument.head.appendChild(createLinkToScript("js/jquery-2.1.3.min.js"));
         aDocument.head.appendChild(createLinkToScript("js/metro.js"));
         aDocument.head.appendChild(createLinkToScript("js/jquery.dataTables.min.js"));
+        aDocument.head.appendChild(createLinkToScript("js/select2.min.js"));
+        //aDocument.head.appendChild(createLinkToScript("js/chart.js"));
+        aDocument.head.appendChild(createLinkToScript("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"));
+        aDocument.head.appendChild(createLinkToScript("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"));
         aDocument.head.appendChild(createLinkToScript("js/index.js"));
         /*MetroAccordion anAccordion = new MetroAccordion();
         MetroTextField usernameTextField = new MetroTextField("Your username goes here", "user", "text", "username");

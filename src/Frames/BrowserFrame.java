@@ -10,7 +10,6 @@ public class BrowserFrame extends Components
     private ChromiumBrowser browser;
     public BrowserFrame()
     {
-        //browser = new ChromiumBrowser("", aPage.toString());
         MetroPage aPage = new MetroPage();
         browser = new ChromiumBrowser(aPage.getHtmlLocation(), "");
         addMenu();

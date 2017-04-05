@@ -1,5 +1,7 @@
 package Entities;
 
+import java.util.*;
+
 public class Ration
 {
     private int code;
@@ -33,6 +35,29 @@ public class Ration
         this.starch = starch;
         this.sugar = sugar;
         this.feedingNotes = feedingNotes;
+    }
+    public ArrayList<String> toList()
+    {
+        return new ArrayList<>(Arrays.asList(code + "", feed, costFreshWeight, costDryMatter, pMj, pcp, dm, me, cp, oil, ndf, starch, sugar, feedingNotes));
+    }
+    public LinkedHashMap<String, String> toMap()
+    {
+        LinkedHashMap<String, String> parameters = new LinkedHashMap<>();
+        parameters.put("Code", code + "");
+        parameters.put("Feed", feed);
+        parameters.put("Cost Fresh Weight", costFreshWeight);
+        parameters.put("Cost Dry Matter", costDryMatter);
+        parameters.put("PMJ", pMj);
+        parameters.put("PCP", pcp);
+        parameters.put("DM", dm);
+        parameters.put("ME", me);
+        parameters.put("CP", cp);
+        parameters.put("Oil", oil);
+        parameters.put("NDF", ndf);
+        parameters.put("Starch", starch);
+        parameters.put("Sugar", sugar);
+        parameters.put("Feeding Notes", feedingNotes);
+        return parameters;
     }
     public String toString()
     {

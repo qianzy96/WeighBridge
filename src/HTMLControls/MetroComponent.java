@@ -15,6 +15,51 @@ public class MetroComponent
     {
         return parentElement.write();
     }
+    protected Option createOptionElement()
+    {
+        return new Option();
+    }
+    protected Option createOptionElement(String innerText)
+    {
+        Option anOptionTag = new Option();
+        if(innerText.length() > 0)
+            anOptionTag.appendText(innerText);
+        return anOptionTag;
+    }
+    protected Option createOptionElement(String innerText, String value)
+    {
+        Option anOptionTag = new Option();
+        if(innerText.length() > 0)
+            anOptionTag.appendText(innerText);
+        if(value.length() > 0)
+            anOptionTag.setValue(value);
+        return anOptionTag;
+    }
+    protected Option createOptionElement(String innerText, String value, String onClickEvent)
+    {
+        Option anOptionTag = new Option();
+        if(innerText.length() > 0)
+            anOptionTag.appendText(innerText);
+        if(value.length() > 0)
+            anOptionTag.setValue(value);
+        if(onClickEvent.length() > 0)
+            anOptionTag.setAttribute("onclick", onClickEvent);
+        return anOptionTag;
+    }
+    protected Iframe createIFrameElement(String url)
+    {
+        Iframe anIframeTag = new Iframe();
+        anIframeTag.setSrc(url);
+        anIframeTag.setStyle("width:100%;height:2000px;");
+        return anIframeTag;
+    }
+    protected Select createSelectElement(String className)
+    {
+        Select aSelectTag = new Select();
+        if(className.length() > 0)
+            aSelectTag.setAttribute("class", className);
+        return aSelectTag;
+    }
     protected Table createTableElement(String className, String dataRole, String id, Boolean allowDataSearching)
     {
         Table aTableTag = new Table();
@@ -331,6 +376,12 @@ public class MetroComponent
         aScript.setAttribute("src", scriptLocation);
         return aScript;
     }
+    protected Script createScript(String scriptContent)
+    {
+        Script aScript = new Script("");
+        aScript.appendText(scriptContent);
+        return aScript;
+    }
     protected Link createLinkToStyleSheet(String styleSheetLocation)
     {
         Link aLink = new Link();
@@ -363,5 +414,17 @@ public class MetroComponent
         aMetaTag.setAttribute("name", "viewport");
         aMetaTag.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no");
         return aMetaTag;
+    }
+    protected Div createCanvasTag(String canvasID, String width, String height)
+    {
+        Div aDivTag = new Div();
+        aDivTag.appendText("<canvas id=\"" + canvasID + "\"");
+        if(width.length() > 0)
+            aDivTag.appendText(" width=\"" + width + "\"");
+        if(height.length() > 0)
+            aDivTag.appendText(" height=\"" + height + "\"");
+        aDivTag.appendText("></canvas>");
+        System.out.println("CANVAS TAG: " + aDivTag.toString());
+        return aDivTag;
     }
 }

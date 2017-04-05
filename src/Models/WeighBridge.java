@@ -187,7 +187,8 @@ public class WeighBridge extends Components
     }
     public void emailReport(String emailAddress)
     {
-        Email anEmail = new Email("stephencullinan1991@gmail.com", "TiobraidArann2016");
+        //Email anEmail = new Email("stephencullinan1991@gmail.com", "TiobraidArann2016");
+        Email anEmail = new Email();
         anEmail.sendMessage(emailAddress, "Weight Docket " + selectedSecondWeight.getCode(),
         "Dear Sir/Madam\n\nPlease find attached the weight docket for " + selectedSecondWeight.getCode() + ".\n\nYours sincerely,\nS Cullinan",
          "dockets/" + selectedSecondWeight.getCode() + ".pdf", selectedSecondWeight.getCode() + ".pdf");

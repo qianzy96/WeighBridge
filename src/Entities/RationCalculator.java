@@ -2,16 +2,17 @@ package Entities;
 
 import Entities.Ration;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import Database.Database.*;
 public class RationCalculator
 {
     private HashMap<Ration, Double> feedCosts;
     private Double totalFreshIntake;
     private String title;
     private Date date;
+    private int numberOfPlaces;
+    private String currencySymbol;
     public RationCalculator(HashMap<Ration, Double> feedCosts, String title)
     {
         this.feedCosts = feedCosts;
@@ -19,6 +20,7 @@ public class RationCalculator
         this.title = title;
         this.date = new Date();
         calculateTotalFreshIntake();
+        initialiseVariables();
     }
     public RationCalculator(String title)
     {
@@ -27,6 +29,7 @@ public class RationCalculator
         this.title = title;
         this.date = new Date();
         calculateTotalFreshIntake();
+        initialiseVariables();
     }
     public String getTitle()
     {
@@ -52,6 +55,20 @@ public class RationCalculator
     {
         this.feedCosts = feedCosts;
         calculateTotalFreshIntake();
+    }
+    private void initialiseVariables()
+    {
+        Database.Database database = new Database.Database();
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("title", "Number Of Places");
+        ArrayList<ArrayList<String>> selectedTableRows = database.getTableRows("settings", parameters, new ArrayList<>(Collections.singletonList("value")),
+        "");
+        if(selectedTableRows.size() > 0)
+            numberOfPlaces = Integer.parseInt(selectedTableRows.get(0).get(0));
+        parameters.put("title", "Currency Symbol");
+        selectedTableRows = database.getTableRows("settings", parameters, new ArrayList<>(Collections.singletonList("value")),"");
+        if(selectedTableRows.size() > 0)
+            currencySymbol = selectedTableRows.get(0).get(0);
     }
     private void calculateTotalFreshIntake()
     {

@@ -1,19 +1,17 @@
 package Entities;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 public class CommodityPrices
 {
     private String commodityTitle;
     private String date;
     private ArrayList<String> headings;
-    private HashMap<String, ArrayList<String>> prices;
+    private LinkedHashMap<String, ArrayList<String>> prices;
     public CommodityPrices(String commodityTitle, String date)
     {
         this.commodityTitle = commodityTitle;
         this.date = date;
         this.headings = new ArrayList<>();
-        this.prices = new HashMap<>();
+        this.prices = new LinkedHashMap<>();
     }
     public void addHeading(String aHeading)
     {
@@ -56,12 +54,20 @@ public class CommodityPrices
     {
         this.headings = headings;
     }
-    public HashMap<String, ArrayList<String>> getPrices()
+    public LinkedHashMap<String, ArrayList<String>> getPrices()
     {
         return prices;
     }
-    public void setPrices(HashMap<String, ArrayList<String>> prices)
+    public void setPrices(LinkedHashMap<String, ArrayList<String>> prices)
     {
         this.prices = prices;
+    }
+    public ArrayList<String> getMonths()
+    {
+        return prices.get("Month");
+    }
+    public ArrayList<String> getLastPrices()
+    {
+        return prices.get("Last");
     }
 }

@@ -127,4 +127,51 @@ public class Utilities
         aList.forEach(x -> formattedOutput.append("\'" + x + "\', "));
         return new JSONString(formattedOutput.substring(0, formattedOutput.length() - 2) + "]");
     }
+    public static JSONString createChart(HashMap<String, String> aHashMap, List<String> labels, LinkedHashMap<String, List<Double>> data)
+    {
+        StringBuilder formattedOutput = new StringBuilder("{");
+        for(Map.Entry<String, String> anEntry : aHashMap.entrySet())
+        {
+            formattedOutput.append("\"" + anEntry.getKey() + "\"");
+            formattedOutput.append(" : ");
+            formattedOutput.append("\"" + anEntry.getValue().replace("\"", "\\\"") + "\", ");
+        }
+        formattedOutput.append("\"barChart\"");
+        formattedOutput.append(" : ");
+        formattedOutput.append("{\"labels\" : " + convertListToJSONArray(labels).getValue() + "}");
+        formattedOutput.append("{\"data\" : [");
+        for(Map.Entry<String, List<Double>> aDataItem : data.entrySet())
+        {
+            formattedOutput.append("{");
+            formattedOutput.append("label: \'" + aDataItem.getKey() + "\',");
+            formattedOutput.append("data: [");
+            for(Double aDoubleValue : aDataItem.getValue())
+                formattedOutput.append(aDoubleValue + ", ");
+            if(aDataItem.getValue().size() > 0)
+                formattedOutput = new StringBuilder(formattedOutput.substring(0, formattedOutput.length() - 2));
+            formattedOutput.append("]");
+            formattedOutput.append("},");
+        }
+        /*
+        datasets:
+            [{
+                label: 'apples',
+                data: [12, 19, 3, 17, 6, 3, 7],
+                backgroundColor: "rgba(153, 255, 51, 0.4)"
+            },
+            {
+                label: 'oranges',
+                data: [2, 29, 5, 5, 2, 3, 10],
+                backgroundColor: "rgba(255, 153, 0, 0.4)"
+            }]
+        */
+        formattedOutput.append("}");
+        return new JSONString(formattedOutput.toString());
+    }
+    public static JSONString convertListToJSONArray(List<String> aList)
+    {
+        StringBuilder formattedOutput = new StringBuilder("[");
+        aList.forEach(x -> formattedOutput.append("\"" + x + "\", "));
+        return new JSONString(formattedOutput.substring(0, formattedOutput.length() - 2) + "]");
+    }
 }

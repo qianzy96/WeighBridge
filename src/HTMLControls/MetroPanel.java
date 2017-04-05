@@ -17,7 +17,7 @@ public class MetroPanel extends MetroComponent
         parentElement.appendChild(headingPanelElement);
         headingPanelElement.appendChild(createSpanElement("icon mif-" + icon));
         headingPanelElement.appendChild(createSpanElement("title", title));
-        Div contentElement = createDivElement("content", "", content);
+        Div contentElement = createDivElement("content bg-white", "", content);
         if(aControl != null)
             contentElement.appendChild(aControl.toHTML());
         parentElement.appendChild(contentElement);

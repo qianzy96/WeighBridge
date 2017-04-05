@@ -14,17 +14,26 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 public class Calculator extends Components
 {
     private Database main;
+    private String currencySymbol;
     public Calculator()
     {
         main = new Database();
+        initialiseVariables();
+    }
+    private void initialiseVariables()
+    {
+        HashMap<String, String> selectedParameters = new HashMap<>();
+        selectedParameters.put("title", "Currency Symbol");
+        ArrayList<ArrayList<String>> tableContents = main.getTableRows("settings", selectedParameters, new ArrayList<>(Collections.singletonList("value")),
+        "");
+        if(tableContents.size() > 0)
+            currencySymbol = tableContents.get(0).get(0);
     }
     public ArrayList<Ration> getAvailableRations()
     {
@@ -33,6 +42,13 @@ public class Calculator extends Components
         contents.forEach(x -> availableRations.add(new Ration(Integer.parseInt(x.get(0)), x.get(1), x.get(2), x.get(3), x.get(4), x.get(5), x.get(6), x.get(7), x.get(8),
         x.get(9), x.get(10), x.get(11), x.get(12), x.get(13))));
         return availableRations;
+    }
+    public ArrayList<String> getAvailableRationsAsStrings()
+    {
+        ArrayList<Ration> availableRations = getAvailableRations();
+        ArrayList<String> rations = new ArrayList<>();
+        availableRations.forEach(x -> rations.add(x.getFeed()));
+        return rations;
     }
     public ArrayList<RecknerCommodity> getAvailableRecknerCommodities()
     {
@@ -50,7 +66,9 @@ public class Calculator extends Components
     }
     public ArrayList<String> getAvailableRationTypes()
     {
-        return new ArrayList<>(Arrays.asList("Growing Cattle", "Finishing Cattle", "Dry Suckler Cow", "Lactating Suckler Cow"));
+        ArrayList<String> availableRationTypes = new ArrayList<>(Arrays.asList("Growing Cattle", "Finishing Cattle", "Dry Suckler Cow", "Lactating Suckler Cow"));
+        Collections.sort(availableRationTypes);
+        return availableRationTypes;
     }
     public void insertNewRationCalculation(String userID, String title, HashMap<Ration, Double> rationsWithQuantities)
     {
@@ -62,6 +80,22 @@ public class Calculator extends Components
             main.insertTableRow("usersrationscomponents", new ArrayList<>(Arrays.asList((usersRationsComponentsMaxNumber + 1) + "",
             (usersRationsMaxNumber + 1) + "", aRation.getKey().getCode() + "", aRation.getValue() + "")));
         }
+    }
+    public Ration getRationFromSpecifiedTitle(String commodityTitle)
+    {
+        Database database = new Database();
+        HashMap<String, String> selectedParameters = new HashMap<>();
+        selectedParameters.put("feed", commodityTitle);
+        ArrayList<ArrayList<String>> rationsTableContents = database.getTableRows("rations", selectedParameters, new ArrayList<>(), "");
+        if(rationsTableContents.size() > 0)
+        {
+            List<String> selectedTableContents = rationsTableContents.get(0);
+            return new Ration(Integer.parseInt(selectedTableContents.get(0)), selectedTableContents.get(1), selectedTableContents.get(2),
+            selectedTableContents.get(3), selectedTableContents.get(4), selectedTableContents.get(5), selectedTableContents.get(6), selectedTableContents.get(7),
+            selectedTableContents.get(8), selectedTableContents.get(9), selectedTableContents.get(10), selectedTableContents.get(11), selectedTableContents.get(12),
+            selectedTableContents.get(13));
+        }
+        return null;
     }
     public ArrayList<String> getCalculationResults(HashMap<Ration, Double> rationsWithQuantities, String title)
     {
@@ -76,37 +110,54 @@ public class Calculator extends Components
         calculationResults.add("Fresh Weight: £" + aCalculator.calculateRationCostFreshWeight());
         return calculationResults;
     }
-    public void generatePDFFile(HashMap<Ration, Double> rationsWithQuantities, String title, String userID)
+    public LinkedHashMap<String, String> getCalculationResultsWithTitles(HashMap<Ration, Double> rationsWithQuantities, String title)
+    {
+        LinkedHashMap<String, String> calculationResults = new LinkedHashMap<>();
+        RationCalculator aCalculator = new RationCalculator(rationsWithQuantities, title);
+        calculationResults.put("Dry Matter", aCalculator.calculateDryMatter().toString());
+        calculationResults.put("Crude Protein", aCalculator.calculateCrudeProtein().toString());
+        calculationResults.put("NDF", aCalculator.calculateNDF().toString());
+        calculationResults.put("Starch & Sugars", aCalculator.calculateStarchAndSugars().toString());
+        calculationResults.put("Oil", aCalculator.calculateOil().toString());
+        calculationResults.put("Dry Matter", "£" + aCalculator.calculateRationCostDryMatter());
+        calculationResults.put("Fresh Weight", "£" + aCalculator.calculateRationCostFreshWeight());
+        return calculationResults;
+    }
+    public String generatePDFFile(HashMap<Ration, Double> rationsWithQuantities, String title, String userID)
     {
         RationCalculator aCalculator = new RationCalculator(rationsWithQuantities, title);
         int userRationID = getUserRationID(userID, title);
-        Report aReport = new Report("rations/" + userRationID + ".pdf");
-        ArrayList<String> reportContent = new ArrayList<>();
-        reportContent.add("Title: " + aCalculator.getTitle());
-        reportContent.add("Date: " + new SimpleDateFormat("dd/mm/yyyy hh:mm:ss").format(aCalculator.getDate()));
-        HashMap<String, String> selectedParameters = new HashMap<>();
-        selectedParameters.put("code", userID);
-        ArrayList<ArrayList<String>> userDetails = main.getTableRows("users", selectedParameters, new ArrayList<>(), "");
-        if(userDetails.size() > 0)
+        if(!new File("rations/" + userRationID + ".pdf").exists())
         {
-            reportContent.add("Printed  By: " + userDetails.get(0).get(3) + " " + userDetails.get(0).get(4));
-            reportContent.add("Email Address: " + userDetails.get(0).get(5));
-            reportContent.add("Phone Number: " + userDetails.get(0).get(6));
+            Report aReport = new Report("rations/" + userRationID + ".pdf");
+            ArrayList<String> reportContent = new ArrayList<>();
+            reportContent.add("Title: " + aCalculator.getTitle());
+            reportContent.add("Date: " + new SimpleDateFormat("dd/mm/yyyy hh:mm:ss").format(aCalculator.getDate()));
+            HashMap<String, String> selectedParameters = new HashMap<>();
+            selectedParameters.put("code", userID);
+            ArrayList<ArrayList<String>> userDetails = main.getTableRows("users", selectedParameters, new ArrayList<>(), "");
+            if (userDetails.size() > 0) {
+                reportContent.add("Printed  By: " + userDetails.get(0).get(3) + " " + userDetails.get(0).get(4));
+                reportContent.add("Email Address: " + userDetails.get(0).get(5));
+                reportContent.add("Phone Number: " + userDetails.get(0).get(6));
+            }
+            for (Map.Entry<Ration, Double> aFeedCost : rationsWithQuantities.entrySet())
+                reportContent.add(aFeedCost.getKey().getFeed() + " " + aFeedCost.getValue());
+            reportContent.add("Total Fresh Intake: " + aCalculator.getTotalFreshIntake());
+            reportContent.add("Total Dry Matter Intake: " + aCalculator.getTotalFreshIntake() * (aCalculator.calculateDryMatter() / 100));
+            reportContent.addAll(getCalculationResults(rationsWithQuantities, title));
+            aReport.addContent(reportContent);
         }
-        for(Map.Entry<Ration, Double> aFeedCost : rationsWithQuantities.entrySet())
-            reportContent.add(aFeedCost.getKey().getFeed() + " " + aFeedCost.getValue());
-        reportContent.add("Total Fresh Intake: " + aCalculator.getTotalFreshIntake());
-        reportContent.add("Total Dry Matter Intake: " + aCalculator.getTotalFreshIntake() * (aCalculator.calculateDryMatter() / 100));
-        reportContent.addAll(getCalculationResults(rationsWithQuantities, title));
-        aReport.addContent(reportContent);
+        return "file:///"  + System.getProperty("user.dir").replace("\\", "/") + "/rations/" + userRationID + ".pdf";
     }
-    public void emailPDFFile(HashMap<Ration, Double> rationsWithQuantities, String title, String userID, String emailAddress)
+    public boolean emailPDFFile(HashMap<Ration, Double> rationsWithQuantities, String title, String userID, String emailAddress)
     {
         int userRationID = getUserRationID(userID, title);
         if(!new File("rations/" + userRationID + ".pdf").exists())
             generatePDFFile(rationsWithQuantities, title, userID);
-        Email anEmail = new Email("stephencullinan1991@gmail.com", "TiobraidArann2016");
-        anEmail.sendMessage(emailAddress, "Ration Report", "Dear Sir/Madam,\n\nPlease find attached the ration report as calculated " +
+        //Email anEmail = new Email("stephencullinan1991@gmail.com", "TiobraidArann2016");
+        Email anEmail = new Email();
+        return anEmail.sendMessage(emailAddress, "Ration Report", "Dear Sir/Madam,\n\nPlease find attached the ration report as calculated " +
         "on the application.\n\nYours faithfully,\nStephen Cullinan", "rations/" + userRationID + ".pdf", "Ration Report.pdf");
     }
     public void printPDFFile(HashMap<Ration, Double> rationsWithQuantities, String userID, String title)
@@ -136,6 +187,10 @@ public class Calculator extends Components
         new ArrayList<>(Arrays.asList("usersrations.code", "usersrationscomponents.userration", "rations.code", "usersrationscomponents.ration")),
         desiredParameters, new ArrayList<>(Arrays.asList("usersrations.title", "rations.feed", "usersrationscomponents.freshweight")), "");
     }
+    public ArrayList<String> getDetailedUsersRationsTitles()
+    {
+        return new ArrayList<>(Arrays.asList("Title", "Feed", "Fresh Weight"));
+    }
     public void removeUserRation(String rationCode)
     {
         HashMap<String, String> currentParameters = new HashMap<>();
@@ -155,11 +210,71 @@ public class Calculator extends Components
     {
         return main.getTableRows(tableName, new HashMap<>(), new ArrayList<>(), "");
     }
+    public ArrayList<ArrayList<String>> getRationDetails(String userRationIdentifier)
+    {
+        HashMap<String, String> desiredParameters = new HashMap<>();
+        desiredParameters.put("code", userRationIdentifier);
+        return main.getTableRows("usersrations", desiredParameters, new ArrayList<>(), "");
+    }
     public ArrayList<String> getTableColumnTitles(String tableName)
     {
         return main.getColumnTitles(tableName);
     }
 
+    public void updateCalculatorSettings(String numberOfPlaces, String currencySymbol)
+    {
+        HashMap<String, String> selectedParameters = new HashMap<>();
+        selectedParameters.put("title", "Number Of Places");
+        ArrayList<ArrayList<String>> existingNumberOfPlacesSetting = main.getTableRows("settings", selectedParameters,
+        new ArrayList<>(Collections.singletonList("title")),"");
+        if(existingNumberOfPlacesSetting.size() > 0)
+        {
+            HashMap<String, String> updatedParameters = new HashMap<>();
+            updatedParameters.put("value", numberOfPlaces);
+            main.updateTableRow("settings", updatedParameters, selectedParameters);
+        }
+        else
+        {
+            int maximumValue = main.getMaxValueOfColumn("settings", "code");
+            main.insertTableRow("settings", new ArrayList<>(Arrays.asList(++maximumValue + "", "Number Of Places", numberOfPlaces)));
+        }
+        selectedParameters.put("title", "Currency Symbol");
+        ArrayList<ArrayList<String>> existingCurrencySymbolSetting = main.getTableRows("settings", selectedParameters,
+        new ArrayList<>(Collections.singletonList("title")), "");
+        if(existingCurrencySymbolSetting.size() > 0)
+        {
+            HashMap<String, String> updatedParameters = new HashMap<>();
+            updatedParameters.put("value", currencySymbol);
+            main.updateTableRow("settings", updatedParameters, selectedParameters);
+        }
+        else
+        {
+            int maximumValue = main.getMaxValueOfColumn("settings", "code");
+            main.insertTableRow("settings", new ArrayList<>(Arrays.asList(++maximumValue + "", "Currency Symbol", currencySymbol)));
+        }
+    }
+    public ArrayList<String> getCalculatorSettings()
+    {
+        ArrayList<String> calculatorSettings = new ArrayList<>();
+        HashMap<String, String> selectedParameters = new HashMap<>();
+        selectedParameters.put("title", "Number Of Places");
+        ArrayList<ArrayList<String>> numberOfPlaces = main.getTableRows("settings", selectedParameters, new ArrayList<>(Collections.singletonList("value")),
+        "");
+        if(numberOfPlaces.size() > 0)
+            calculatorSettings.add(numberOfPlaces.get(0).get(0));
+        selectedParameters.put("title", "Currency Symbol");
+        ArrayList<ArrayList<String>> currencySymbol = main.getTableRows("settings", selectedParameters, new ArrayList<>(Collections.singletonList("value")),
+        "");
+        if(currencySymbol.size() > 0)
+            calculatorSettings.add(currencySymbol.get(0).get(0));
+        return calculatorSettings;
+    }
+    public void insertNewCommodity(ArrayList<String> newCommodity)
+    {
+        int maximumNumber = main.getMaxValueOfColumn("rations", "code");
+        newCommodity.add(0, ++maximumNumber + "");
+        main.insertTableRow("rations", newCommodity);
+    }
     private int getUserRationID(String userID, String title)
     {
         HashMap<String, String> desiredParameters = new HashMap<>();
