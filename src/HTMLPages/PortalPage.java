@@ -1,5 +1,5 @@
 package HTMLPages;
-import Entities.User;
+import Users.User;
 import HTMLControls.*;
 import Models.Portal;
 import Utilities.Utilities;
@@ -30,17 +30,21 @@ public class PortalPage
         calculatorPage.setUser(user);
         DashboardPage dashboardPage = new DashboardPage();
         dashboardPage.setUser(user);
+        MessagePage messagePage = new MessagePage();
+        messagePage.setUser(user);
         MetroHeading portalHeading = new MetroHeading("Logged In As " + user.getUsername(), "");
         MetroTile calculatorTile = new MetroTile("getCalculatorPage();", "cyan", "Calculator", "calculator2", "");
         MetroTile pricesTile = new MetroTile("createDashboardPage();", "cyan", "Prices", "eur", "");
+        MetroTile messagesTile = new MetroTile("createMessagePage();", "cyan", "Messages", "mail-read", "");
         MetroTile editProfileTile = new MetroTile("getEditUserSettingsPage();", "cyan", "Edit Profile", "pencil", "");
         MetroTile logOutTile = new MetroTile("loadHTML5Edition();", "cyan", "Log Out", "exit", "");
         portalLayout.addRow(portalHeading);
         portalLayout.addEmptyRows(2);
         portalLayout.addRow(new ArrayList<>(Arrays.asList(calculatorTile, pricesTile)), new ArrayList<>(Arrays.asList(1, 4, 1, 1, 4, 1)));
         portalLayout.addEmptyRows(2);
-        portalLayout.addRow(new ArrayList<>(Arrays.asList(editProfileTile, logOutTile)), new ArrayList<>(Arrays.asList(1, 4, 1, 1, 4, 1)));
+        portalLayout.addRow(new ArrayList<>(Arrays.asList(messagesTile, editProfileTile)), new ArrayList<>(Arrays.asList(1, 4, 1, 1, 4, 1)));
         portalLayout.addEmptyRows(2);
+        portalLayout.addRow(new ArrayList<>(Arrays.asList(logOutTile)), new ArrayList<>(Arrays.asList(1, 4, 1)));
         portalAccordion.addFrame("Portal For " + user.getUsername(), portalLayout, "home");
         return portalAccordion;
     }

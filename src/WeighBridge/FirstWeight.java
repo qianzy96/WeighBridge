@@ -1,9 +1,4 @@
-package Entities;
-
-import Entities.Commodity;
-import Entities.Consignee;
-import Entities.DocketType;
-import Entities.Driver;
+package WeighBridge;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

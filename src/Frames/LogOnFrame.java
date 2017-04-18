@@ -1,12 +1,8 @@
 package Frames;
 
-import Entities.Administrator;
-import Entities.User;
-
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import Models.*;
 import Utilities.Utilities;
 

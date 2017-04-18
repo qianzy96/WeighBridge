@@ -1,9 +1,9 @@
 package HTMLPages;
 
-import Entities.Commodity;
-import Entities.Consignee;
-import Entities.DocketType;
-import Entities.Driver;
+import WeighBridge.Commodity;
+import WeighBridge.Consignee;
+import WeighBridge.DocketType;
+import WeighBridge.Driver;
 import HTMLControls.*;
 import Models.WeighBridge;
 import Utilities.Utilities;

@@ -1,11 +1,11 @@
 package HTMLPages;
-import Entities.*;
+import Prices.CommodityPrices;
+import Users.User;
 import HTMLControls.*;
 import Models.*;
 import Utilities.*;
 import com.teamdev.jxbrowser.chromium.JSONString;
 
-import javax.swing.*;
 import java.util.*;
 public class DashboardPage
 {

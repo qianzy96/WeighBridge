@@ -1,6 +1,7 @@
 package HTMLPages;
 
-import Entities.*;
+import RationCalculator.Ration;
+import Users.User;
 import HTMLControls.*;
 import Models.Calculator;
 import Utilities.Utilities;

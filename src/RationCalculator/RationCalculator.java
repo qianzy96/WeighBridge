@@ -1,10 +1,7 @@
-package Entities;
-
-import Entities.Ration;
+package RationCalculator;
 
 import java.util.*;
 
-import Database.Database.*;
 public class RationCalculator
 {
     private HashMap<Ration, Double> feedCosts;

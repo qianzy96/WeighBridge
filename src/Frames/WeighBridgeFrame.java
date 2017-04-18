@@ -1,17 +1,13 @@
 package Frames;
 
-import Entities.*;
+import WeighBridge.*;
 import Models.WeighBridge;
 import Utilities.ObtainPhoto;
 import org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 
 public class WeighBridgeFrame extends Components
 {

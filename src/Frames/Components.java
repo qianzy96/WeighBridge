@@ -125,6 +125,14 @@ public class Components
         items.forEach(x -> aDropDown.addItem(x));
         return aDropDown;
     }
+    protected JComboBox createDropDown(ArrayList<String> items, String selectedItem)
+    {
+        JComboBox aDropDown = new JComboBox();
+        aDropDown.setFont(font);
+        items.forEach(x -> aDropDown.addItem(x));
+        aDropDown.setSelectedItem(selectedItem);
+        return aDropDown;
+    }
     protected JButton createTile(String caption, String imagePath, int totalNumberOfTiles)
     {
         JButton aTile = new JButton();

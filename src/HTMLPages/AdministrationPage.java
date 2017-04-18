@@ -3,10 +3,8 @@ import HTMLControls.*;
 import Models.Administration;
 import Utilities.*;
 import com.teamdev.jxbrowser.chromium.*;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
-
 public class AdministrationPage
 {
     private Administration administration;

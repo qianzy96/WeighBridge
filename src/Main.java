@@ -36,5 +36,11 @@ public class Main
         {
             new BrowserFrame();
         });
+
+
+        /*SwingUtilities.invokeLater(() ->
+        {
+            new WeighBridgeFrame();
+        });*/
     }
 }

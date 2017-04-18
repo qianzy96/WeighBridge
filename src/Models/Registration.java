@@ -1,12 +1,8 @@
 package Models;
 import Database.Database;
-import Entities.User;
-import Frames.Components;
-import Models.Portal;
-import javax.swing.*;
-import java.awt.*;
+import Users.User;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Registration

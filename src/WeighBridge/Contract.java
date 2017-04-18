@@ -1,11 +1,5 @@
-package Entities;
-
-import Entities.Commodity;
-import Entities.Consignee;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
+package WeighBridge;
+import java.util.*;
 public class Contract
 {
     private int code;
@@ -14,7 +8,9 @@ public class Contract
     private double price;
     private DocketType docketType;
     private Consignee consignee;
-    public Contract(int code, Commodity commodity, double total, double price, DocketType docketType, Consignee consignee)
+    private Date startDate;
+    private Date endDate;
+    public Contract(int code, Commodity commodity, double total, double price, DocketType docketType, Consignee consignee, Date startDate, Date endDate)
     {
         this.code = code;
         this.commodity = commodity;
@@ -22,14 +18,18 @@ public class Contract
         this.price = price;
         this.docketType = docketType;
         this.consignee = consignee;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
-    public Contract(Commodity commodity, double total, double price, DocketType docketType, Consignee consignee)
+    public Contract(Commodity commodity, double total, double price, DocketType docketType, Consignee consignee, Date startDate, Date endDate)
     {
         this.commodity = commodity;
         this.total = total;
         this.price = price;
         this.docketType = docketType;
         this.consignee = consignee;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
     public int getCode()
     {
@@ -78,6 +78,22 @@ public class Contract
     public void setConsignee(Consignee consignee)
     {
         this.consignee = consignee;
+    }
+    public Date getStartDate()
+    {
+        return startDate;
+    }
+    public void setStartDate(Date startDate)
+    {
+        this.startDate = startDate;
+    }
+    public Date getEndDate()
+    {
+        return endDate;
+    }
+    public void setEndDate(Date endDate)
+    {
+        this.endDate = endDate;
     }
     public String toString()
     {

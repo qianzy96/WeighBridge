@@ -1,17 +1,9 @@
 package Models;
 
-import Entities.*;
+import WeighBridge.*;
 import Frames.Components;
 import Utilities.*;
-import Frames.LogOnFrame;
-import Frames.RegistrationFrame;
-import Models.LogOn;
-import Models.Registration;
-import org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel;
 
-import javax.rmi.CORBA.Util;
-import javax.swing.*;
-import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,7 +113,7 @@ public class WeighBridge extends Components
     public void insertNewSecondWeight(String firstWeightIdentifer, String firstWeightValue, String firstWeightDate)
     {
         selectedFirstWeight = new FirstWeight(Integer.parseInt(firstWeightIdentifer), selectedDriver, selectedCommodity, Double.parseDouble(firstWeightValue),
-        Utilities.createDate(firstWeightDate, "yyyy/MM/dd HH:mm:ss"), selectedDocketType, selectedConsignee);
+        Utilities.createDate(firstWeightDate, "yyyy-MM-dd HH:mm:ss"), selectedDocketType, selectedConsignee);
         int maximumValue = main.getMaxValueOfColumn("secondweights", "code");
         selectedSecondWeight = new SecondWeight(maximumValue + 1, 15000, new Date(), selectedFirstWeight);
         main.insertTableRow("secondweights", selectedSecondWeight.toList());
@@ -187,7 +179,6 @@ public class WeighBridge extends Components
     }
     public void emailReport(String emailAddress)
     {
-        //Email anEmail = new Email("stephencullinan1991@gmail.com", "TiobraidArann2016");
         Email anEmail = new Email();
         anEmail.sendMessage(emailAddress, "Weight Docket " + selectedSecondWeight.getCode(),
         "Dear Sir/Madam\n\nPlease find attached the weight docket for " + selectedSecondWeight.getCode() + ".\n\nYours sincerely,\nS Cullinan",

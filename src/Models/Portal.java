@@ -1,12 +1,7 @@
 package Models;
 
-import Entities.User;
-import Frames.Components;
-import Models.Calculator;
-import Models.Dashboard;
+import Users.User;
 
-import javax.swing.*;
-import java.awt.*;
 import Database.Database;
 import java.util.ArrayList;
 import java.util.HashMap;

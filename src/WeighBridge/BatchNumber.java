@@ -1,7 +1,7 @@
-package Entities;
+package WeighBridge;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+
 public class BatchNumber
 {
     private int code;

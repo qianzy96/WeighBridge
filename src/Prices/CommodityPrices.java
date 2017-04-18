@@ -1,4 +1,4 @@
-package Entities;
+package Prices;
 import java.util.*;
 public class CommodityPrices
 {

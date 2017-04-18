@@ -1,7 +1,7 @@
 package Models;
 
-import Entities.Administrator;
-import Entities.User;
+import Users.Administrator;
+import Users.User;
 import Database.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +32,7 @@ public class LogOn
         if (selectedAdministrator.size() == 1)
         {
             anAdministrator.setPassword(password);
+            anAdministrator.setCode(Integer.parseInt(selectedAdministrator.get(0).get(0)));
             if (selectedAdministrator.get(0).get(1).trim().equals(anAdministrator.getUsername().trim())
             && selectedAdministrator.get(0).get(2).trim().equals(anAdministrator.getPassword()))
                 return true;
@@ -48,6 +49,8 @@ public class LogOn
         if(selectedUser.size() == 1)
         {
             anUser.setPassword(password);
+            anUser = new User(Integer.parseInt(selectedUser.get(0).get(0)), selectedUser.get(0).get(1), selectedUser.get(0).get(2), selectedUser.get(0).get(3),
+            selectedUser.get(0).get(4), selectedUser.get(0).get(5), selectedUser.get(0).get(6));
             if(selectedUser.get(0).get(1).trim().equals(anUser.getUsername().trim()) && selectedUser.get(0).get(2).trim().equals(anUser.getPassword()))
                 return true;
         }

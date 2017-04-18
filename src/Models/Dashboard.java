@@ -1,5 +1,5 @@
 package Models;
-import Entities.CommodityPrices;
+import Prices.CommodityPrices;
 import Frames.Components;
 import Utilities.*;
 import org.jfree.data.category.DefaultCategoryDataset;

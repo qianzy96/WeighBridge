@@ -1,7 +1,5 @@
-package Entities;
-
+package RationCalculator;
 import java.util.*;
-
 public class Ration
 {
     private int code;

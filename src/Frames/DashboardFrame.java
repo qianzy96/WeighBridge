@@ -1,8 +1,6 @@
 package Frames;
-import Entities.CommodityPrices;
+import Prices.CommodityPrices;
 import Models.Dashboard;
-import Models.Portal;
-import Models.WeighBridge;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -13,7 +11,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 public class DashboardFrame extends Components
 {

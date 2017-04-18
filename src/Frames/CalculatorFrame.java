@@ -1,20 +1,15 @@
 package Frames;
-import Entities.Ration;
-import Entities.RationCalculator;
+import RationCalculator.Ration;
 import Models.Calculator;
-import Models.Portal;
-import Models.WeighBridge;
 import org.pushingpixels.flamingo.api.common.JCommandButton;
 import org.pushingpixels.flamingo.api.ribbon.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
+
 public class CalculatorFrame extends Components
 {
     private JRibbonFrame frame;

@@ -49,6 +49,7 @@ public class ChromiumBrowser
                     value.asObject().setProperty("WeighBridge", new WeighBridgePage());
                     value.asObject().setProperty("Calculator", new CalculatorPage());
                     value.asObject().setProperty("Dashboard", new DashboardPage());
+                    value.asObject().setProperty("Message", new MessagePage());
                 }
             }
 

@@ -21,13 +21,14 @@ public class PortalFrame extends Components
     {
         this.aPortal = new Portal();
         this.userID = userID;
+        System.out.println("USER ID: " + userID);
         createMenu();
     }
     private void createMenu()
     {
         frame = createFrame("Portal");
-        JPanel aPanel = new JPanel(new GridLayout(2, 2));
-        JButton calculatorButton = createTile("Calculator", "", 4);
+        JPanel aPanel = new JPanel(new GridLayout(3, 2));
+        JButton calculatorButton = createTile("Calculator", "", 5);
         calculatorButton.addActionListener(x ->
         {
             SwingUtilities.invokeLater(() ->
@@ -37,7 +38,7 @@ public class PortalFrame extends Components
             });
         });
         aPanel.add(calculatorButton);
-        JButton dashboardButton = createTile("Prices", "", 4);
+        JButton dashboardButton = createTile("Prices", "", 5);
         dashboardButton.addActionListener(x ->
         {
             SwingUtilities.invokeLater(() ->
@@ -47,7 +48,17 @@ public class PortalFrame extends Components
             });
         });
         aPanel.add(dashboardButton);
-        JButton editProfileButton = createTile("Edit Profile", "", 4);
+        JButton messageButton = createTile("Messages", "", 5);
+        messageButton.addActionListener(x ->
+        {
+            SwingUtilities.invokeLater(() ->
+            {
+                new MessageFrame(userID);
+                frame.dispose();
+            });
+        });
+        aPanel.add(messageButton);
+        JButton editProfileButton = createTile("Edit Profile", "", 5);
         editProfileButton.addActionListener(x ->
         {
             ArrayList<String> userDetails = aPortal.getSelectedRowOfTable("users", userID);
@@ -105,7 +116,7 @@ public class PortalFrame extends Components
             }
         });
         aPanel.add(editProfileButton);
-        JButton logOutButton = createTile("Log Out", "", 4);
+        JButton logOutButton = createTile("Log Out", "", 5);
         logOutButton.addActionListener(x ->
         {
             SwingUtilities.invokeLater(() ->

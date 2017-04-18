@@ -1,5 +1,5 @@
 package HTMLPages;
-import Entities.User;
+import Users.User;
 import HTMLControls.*;
 import Models.Registration;
 import Utilities.*;

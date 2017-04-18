@@ -1,6 +1,4 @@
-package Entities;
-
-import Entities.FirstWeight;
+package WeighBridge;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

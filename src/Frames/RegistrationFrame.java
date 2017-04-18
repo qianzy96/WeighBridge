@@ -1,14 +1,12 @@
 package Frames;
 
-import Entities.User;
-import Models.Portal;
+import Users.User;
 import Models.Registration;
 import Utilities.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class RegistrationFrame extends Components
 {
