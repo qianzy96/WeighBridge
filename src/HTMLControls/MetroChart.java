@@ -5,27 +5,17 @@ import java.util.*;
 public class MetroChart extends MetroComponent
 {
     private String chartID;
-    private List<String> chartLabels;
-    private LinkedHashMap<String, List<Double>> chartData;
-    private String scriptContent;
-    public MetroChart(String chartID, List<String> chartLabels, LinkedHashMap<String, List<Double>> chartData)
+    public MetroChart(String chartID)
     {
         this.chartID = chartID;
-        this.chartLabels = chartLabels;
-        this.chartData = chartData;
-        this.scriptContent = "";
         createControl();
-    }
-    public String getScriptContent()
-    {
-        return scriptContent;
     }
     private void createControl()
     {
         parentElement = createDivElement("");
-        Div canvasTag = createCanvasTag(chartID, "100%", "100%");
+        Div canvasTag = createCanvasTag(chartID, "100%", "50%");
         parentElement.appendChild(canvasTag);
-        scriptContent = "function createBarChart()" +
+        /*scriptContent = "function createBarChart()" +
         "{" +
                 "alert('CREATE BAR CHART FUNCTION CALLED');" +
                 "var barChartContext = document.getElementById('" + chartID + "').getContext('2d');" +
@@ -63,7 +53,7 @@ public class MetroChart extends MetroComponent
             dataText = dataText.substring(0, dataText.length() - 2);
         scriptContent = scriptContent.replace("@Labels", labelsText);
         scriptContent = scriptContent.replace("@DataSets", dataText);
-        System.out.println("SCRIPT CONTENT: " + scriptContent);
+        System.out.println("SCRIPT CONTENT: " + scriptContent);*/
         //Script aScriptTag = createScript(scriptContent);
         //parentElement.appendChild(aScriptTag);
     }

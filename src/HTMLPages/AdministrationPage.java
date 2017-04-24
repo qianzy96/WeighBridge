@@ -2,6 +2,7 @@ package HTMLPages;
 import HTMLControls.*;
 import Models.Administration;
 import Utilities.*;
+import WeighBridge.*;
 import com.teamdev.jxbrowser.chromium.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -102,6 +103,19 @@ public class AdministrationPage
             fluentMenu = new MetroFluentMenu("administrationFluentMenu", "Main Menu", "getAdministrationMainMenu();",
             new ArrayList<>(Collections.singletonList("Batch Numbers & Settings")));
             fluentMenu.addPanelGroups(new ArrayList<>(Arrays.asList(batchNumbersMenuGroup, settingsMenuGroup)));
+        }
+        else if(selectedInteger == 7)
+        {
+            ArrayList<MetroFluentButton> fluentMenuButtons = new ArrayList<>();
+            fluentMenuButtons.add(new MetroFluentButton("Add A Contract", "plus", "addContract();"));
+            fluentMenuButtons.add(new MetroFluentButton("View Contracts", "database", "viewContracts();"));
+            fluentMenuButtons.add(new MetroFluentButton("Delete A Contract", "bin", "deleteContracts();"));
+            fluentMenuButtons.add(new MetroFluentButton("Edit A Contract", "pencil", "editContracts();"));
+            fluentMenuButtons.add(new MetroFluentButton("Generate PDF File For Contract", "file-pdf", "pdfForSelectedContract();"));
+            MetroFluentMenuPanelGroup contractsMenuGroup = new MetroFluentMenuPanelGroup("Contracts", fluentMenuButtons);
+            fluentMenu = new MetroFluentMenu("administrationFluentMenu", "Main Menu", "getAdministrationMainMenu();",
+            new ArrayList<>(Collections.singletonList("Contracts")));
+            fluentMenu.addPanelGroups(new ArrayList<>(Arrays.asList(contractsMenuGroup)));
         }
         MetroLayout fluentMenuLayout = new MetroLayout();
         if(fluentMenu != null)
@@ -229,6 +243,12 @@ public class AdministrationPage
     public JSONString createMainMenu()
     {
         MetroAccordion mainMenuAccordion = new MetroAccordion();
+        MetroLayout customAdministrationFluentMenuLayout = new MetroLayout();
+        List<MetroComponent> customAdministrationFluentMenuTiles = new ArrayList<>();
+        customAdministrationFluentMenuTiles.add(new MetroTile("createFluentMenu(7);", "cyan", "Contracts", "eur", ""));
+        customAdministrationFluentMenuLayout.addMultipleRows(customAdministrationFluentMenuTiles, 3, 1, 3, 0,
+        2);
+        mainMenuAccordion.addFrame("Custom Administration Menu", customAdministrationFluentMenuLayout, "menu");
         MetroLayout administrationFluentMenuLayout = new MetroLayout();
         List<MetroComponent> administrationFluentMenuTiles = new ArrayList<>();
         administrationFluentMenuTiles.add(new MetroTile("createFluentMenu(0);", "cyan", "Settings", "cog", ""));
@@ -391,5 +411,232 @@ public class AdministrationPage
         Administration anAdministration = new Administration();
         anAdministration.deleteSelectedRow(tableName, uniqueIdentifier);
         return createTableForDeletions(tableName);
+    }
+    public JSONString viewContracts()
+    {
+        Administration anAdministration = new Administration();
+        ArrayList<String> contractsTableTitles = anAdministration.getContractsTitles();
+        ArrayList<ArrayList<String>> contractsTableValues = anAdministration.getContractsValues();
+        MetroDataTable contractsDataTable = new MetroDataTable("contractsDataTable", contractsTableTitles, contractsTableValues, new ArrayList<>());
+        MetroAccordion contractsAccordion = new MetroAccordion();
+        contractsAccordion.addFrame("Contracts", contractsDataTable, "eur");
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("html", contractsAccordion.toString());
+        return Utilities.convertHashMapToJSON(parameters);
+    }
+    public JSONString deleteContracts()
+    {
+        Administration anAdministration = new Administration();
+        ArrayList<String> contractsTableTitles = anAdministration.getContractsTitles();
+        ArrayList<ArrayList<String>> contractsTableValues = anAdministration.getContractsValues();
+        ArrayList<String> contractsTableClickEvents = new ArrayList<>();
+        contractsTableValues.forEach(x -> contractsTableClickEvents.add("deleteSelectedContract('" + x.get(0) + "');"));
+        MetroDataTable contractsDataTable = new MetroDataTable("contractsDataTable", contractsTableTitles, contractsTableValues, contractsTableClickEvents);
+        MetroAccordion contractsAccordion = new MetroAccordion();
+        contractsAccordion.addFrame("Contracts", contractsDataTable, "bin");
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("html", contractsAccordion.toString());
+        return Utilities.convertHashMapToJSON(parameters);
+    }
+    public JSONString pdfForSelectedContract()
+    {
+        Administration anAdministration = new Administration();
+        ArrayList<String> contractsTableTitles = anAdministration.getContractsTitles();
+        ArrayList<ArrayList<String>> contractsTableValues = anAdministration.getContractsValues();
+        ArrayList<String> contractsTableClickEvents = new ArrayList<>();
+        contractsTableValues.forEach(x -> contractsTableClickEvents.add("generatePDFForSelectedContract('" + x.get(0) + "');"));
+        MetroDataTable contractsDataTable = new MetroDataTable("contractsDataTable", contractsTableTitles, contractsTableValues, contractsTableClickEvents);
+        MetroAccordion contractsAccordion = new MetroAccordion();
+        contractsAccordion.addFrame("Contracts", contractsDataTable, "file-pdf");
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("html", contractsAccordion.toString());
+        return Utilities.convertHashMapToJSON(parameters);
+    }
+    public JSONString generatePDFForSelectedContract(String contractID)
+    {
+        Administration anAdministration = new Administration();
+        String fileLocation = anAdministration.generateContractReport(contractID);
+        MetroAccordion generatePDFForSelectedContractAccordion = new MetroAccordion();
+        MetroIFrame anIFrame = new MetroIFrame(fileLocation);
+        generatePDFForSelectedContractAccordion.addFrame("PDF Report For Contract " + contractID, anIFrame, "file-pdf");
+        MetroLayout generatePDFForSelectedContractLayout = new MetroLayout();
+        MetroTile emailTile = new MetroTile("emailPDFForSelectedContract('" + contractID + "')", "cyan", "Email PDF Report",
+        "mail-read", "");
+        MetroTile printTile = new MetroTile("", "cyan", "Print PDF Report", "printer", "");
+        generatePDFForSelectedContractLayout.addRow(new ArrayList<>(Arrays.asList(emailTile, printTile)), new ArrayList<>(Arrays.asList(1, 4, 1, 1, 4, 1)));
+        MetroUpdatePanel generatePDFForSelectedContractUpdatePanel = new MetroUpdatePanel("generatePDFForSelectedContractUpdatePanel",
+        generatePDFForSelectedContractLayout);
+        MetroLayout generatePDFForSelectedContractMasterLayout = new MetroLayout();
+        generatePDFForSelectedContractMasterLayout.addRow(generatePDFForSelectedContractUpdatePanel);
+        generatePDFForSelectedContractMasterLayout.addRow(generatePDFForSelectedContractAccordion);
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("html", generatePDFForSelectedContractMasterLayout.toString());
+        return Utilities.convertHashMapToJSON(parameters);
+    }
+    public JSONString emailPDFForSelectedContract(String contractID)
+    {
+        MetroTextField emailAddress = new MetroTextField("Please enter the email address of the recipient", "mail-read", "text",
+        "emailAddress");
+        MetroPanel emailAddressPanel = new MetroPanel("Please enter the email address of the recipient", "", "mail-read", emailAddress);
+        MetroCommandButton emailAddressButton = new MetroCommandButton("Send", "Send Your Email", "mail-read",
+       "emailPDFConfirmation('" + contractID + "');","success");
+        MetroLayout emailAddressLayout = new MetroLayout();
+        emailAddressLayout.addRow(emailAddressPanel);
+        emailAddressLayout.addEmptyRows(2);
+        emailAddressLayout.addRow(emailAddressButton, new ArrayList<>(Arrays.asList(4, 4, 4)));
+        emailAddressLayout.addEmptyRows(2);
+        MetroAccordion emailAddressAccordion = new MetroAccordion();
+        emailAddressAccordion.addFrame("Email Address Of The Recipient", emailAddressLayout, "mail-read");
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("html", emailAddressAccordion.toString());
+        return Utilities.convertHashMapToJSON(parameters);
+    }
+    public JSONString emailPDFConfirmation(String contractID, String emailAddress)
+    {
+        Administration anAdministration = new Administration();
+        MetroAccordion emailPDFConfirmationAccordion = new MetroAccordion();
+        Boolean emailStatus = anAdministration.emailContractReport(emailAddress, contractID);
+        if(emailStatus)
+            emailPDFConfirmationAccordion.addFrame("Email Successfully Sent", new MetroHeading("Your email was successfully sent", ""),
+            "mail-read");
+        else
+            emailPDFConfirmationAccordion.addFrame("Email Was Not Successfully Sent", new MetroHeading("Your email was not successfully sent", ""),
+            "warning");
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("html", emailPDFConfirmationAccordion.toString());
+        return Utilities.convertHashMapToJSON(parameters);
+    }
+    public JSONString deleteSelectedContract(String contractID)
+    {
+        Administration anAdministration = new Administration();
+        ArrayList<String> contractsTableTitles = anAdministration.getContractsTitles();
+        ArrayList<String> selectedContract = anAdministration.getContractAsList(contractID);
+        ArrayList<ArrayList<String>> contractsTableValues = new ArrayList<>();
+        contractsTableValues.add(selectedContract);
+        MetroDataTable contractsDataTable = new MetroDataTable("contractsDataTable", contractsTableTitles, contractsTableValues, new ArrayList<>());
+        MetroLayout contractsLayout = new MetroLayout();
+        contractsLayout.addEmptyRows(2);
+        contractsLayout.addRow(new MetroHeading("Are you sure you wish to delete the selected contract?", ""));
+        contractsLayout.addEmptyRows(2);
+        contractsLayout.addRow(contractsDataTable);
+        contractsLayout.addEmptyRows(2);
+        MetroCommandButton deleteContractConfirmationButton = new MetroCommandButton("Delete", "Delete The Selected Contract", "bin",
+        "deleteSelectedContractConfirmation('" + contractID + "');", "success");
+        MetroCommandButton deleteContractDeletionButton = new MetroCommandButton("Cancel", "Return To Contracts", "exit",
+        "deleteContracts();", "danger");
+        contractsLayout.addRow(new ArrayList<>(Arrays.asList(deleteContractConfirmationButton, deleteContractDeletionButton)),
+        new ArrayList<>(Arrays.asList(1, 4, 1, 1, 4, 1)));
+        contractsLayout.addEmptyRows(2);
+        MetroAccordion contractsAccordion = new MetroAccordion();
+        contractsAccordion.addFrame("Contracts", contractsLayout, "bin");
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("html", contractsAccordion.toString());
+        return Utilities.convertHashMapToJSON(parameters);
+    }
+    public JSONString deleteSelectedContractConfirmation(String contractID)
+    {
+        Administration anAdministration = new Administration();
+        anAdministration.deleteSelectedRow("contracts", contractID);
+        return deleteContracts();
+    }
+    public JSONString addContract()
+    {
+        Administration anAdministration = new Administration();
+        MetroDropDown commoditiesDropDown = new MetroDropDown("commoditiesDropDown", "Please select a commodity", anAdministration.getCommoditiesValues());
+        MetroTextField price = new MetroTextField("Please enter the price of the contract", "eur", "text", "price");
+        MetroTextField total = new MetroTextField("Please enter the total tonnage of the contract", "eur", "text", "total");
+        MetroDropDown docketTypesDropDown = new MetroDropDown("docketTypesDropDown", "Please select a docket type",
+        anAdministration.getDocketTypesValues());
+        DocketType existingDocketType = new DocketType(1, "Purchase");
+        MetroDropDown consigneesDropDown = new MetroDropDown("consigneesDropDown", "Please select a consignee",
+        anAdministration.getConsigneesValues(existingDocketType));
+        MetroTextField startDate = new MetroTextField("Please enter the start date of the contract", "calendar", "text",
+        "startDate");
+        MetroTextField endDate = new MetroTextField("Please enter the end date of the contract", "calendar", "text",
+        "endDate");
+        MetroCommandButton addContractCommandButton = new MetroCommandButton("Add", "Add Your Contract", "plus",
+        "saveNewContract();", "success");
+        MetroLayout addContractLayout = new MetroLayout();
+        addContractLayout.addEmptyRows(2);
+        addContractLayout.addRow(commoditiesDropDown);
+        addContractLayout.addEmptyRows(2);
+        addContractLayout.addRow(price);
+        addContractLayout.addEmptyRows(2);
+        addContractLayout.addRow(total);
+        addContractLayout.addEmptyRows(2);
+        addContractLayout.addRow(docketTypesDropDown);
+        addContractLayout.addEmptyRows(2);
+        addContractLayout.addRow(consigneesDropDown);
+        addContractLayout.addEmptyRows(2);
+        addContractLayout.addRow(startDate);
+        addContractLayout.addEmptyRows(2);
+        addContractLayout.addRow(endDate);
+        addContractLayout.addEmptyRows(2);
+        addContractLayout.addRow(addContractCommandButton, new ArrayList<>(Arrays.asList(4, 4, 4)));
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("html", addContractLayout.toString());
+        return Utilities.convertHashMapToJSON(parameters);
+    }
+    public JSONString saveNewContract(String commodityTitle, String price, String total, String docketType, String consignee, String startDate, String endDate)
+    {
+        Administration anAdministration = new Administration();
+        anAdministration.insertNewContract(commodityTitle, price, total, docketType, consignee, startDate, endDate);
+        return viewContracts();
+    }
+    public JSONString editContracts()
+    {
+        Administration anAdministration = new Administration();
+        ArrayList<String> contractsTableTitles = anAdministration.getContractsTitles();
+        ArrayList<ArrayList<String>> contractsTableValues = anAdministration.getContractsValues();
+        ArrayList<String> contractsTableClickEvents = new ArrayList<>();
+        contractsTableValues.forEach(x -> contractsTableClickEvents.add("editSelectedContract('" + x.get(0) + "');"));
+        MetroDataTable contractsDataTable = new MetroDataTable("contractsDataTable", contractsTableTitles, contractsTableValues, contractsTableClickEvents);
+        MetroAccordion contractsAccordion = new MetroAccordion();
+        contractsAccordion.addFrame("Contracts", contractsDataTable, "pencil");
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("html", contractsAccordion.toString());
+        return Utilities.convertHashMapToJSON(parameters);
+    }
+    public JSONString editSelectedContract(String contractID)
+    {
+        Administration anAdministration = new Administration();
+        Contract aContract = anAdministration.getContract(contractID);
+        MetroDropDown selectedCommodity = new MetroDropDown("selectedCommodity", "Please select a commodity", anAdministration.getCommoditiesValues());
+        MetroTextField price = new MetroTextField("Please enter a value for the price of the commodity", "eur", "text",
+        "price", aContract.getPrice() + "");
+        MetroTextField total = new MetroTextField("Please enter a value for the total of the commodity", "eur", "text",
+        "total", aContract.getTotal() + "");
+        MetroDropDown selectedDocketType = new MetroDropDown("selectedDocketType", "Please select a docket type", anAdministration.getDocketTypesValues());
+        MetroDropDown selectedConsignee = new MetroDropDown("selectedConsignee", "Please select a consignee",
+        anAdministration.getConsigneesValues(aContract.getDocketType()));
+        MetroTextField startDate = new MetroTextField("Please enter a value for the start date of the contract", "calendar", "text",
+        "startDate", new SimpleDateFormat("yyyy-MM-dd").format(aContract.getStartDate()));
+        MetroTextField endDate = new MetroTextField("Please enter a value for the end date of the contract", "calendar", "text",
+        "endDate", new SimpleDateFormat("yyyy-MM-dd").format(aContract.getEndDate()));
+        MetroCommandButton updateSelectedContract = new MetroCommandButton("Update", "Update Selected Contract", "checkmark",
+        "", "success");
+        MetroCommandButton cancelSelectedContract = new MetroCommandButton("Cancel", "Return To Contracts", "exit",
+        "editContracts();", "danger");
+        MetroLayout contractLayout = new MetroLayout();
+        contractLayout.addRow(selectedCommodity);
+        contractLayout.addEmptyRows(2);
+        contractLayout.addRow(price);
+        contractLayout.addEmptyRows(2);
+        contractLayout.addRow(total);
+        contractLayout.addEmptyRows(2);
+        contractLayout.addRow(selectedDocketType);
+        contractLayout.addEmptyRows(2);
+        contractLayout.addRow(selectedConsignee);
+        contractLayout.addEmptyRows(2);
+        contractLayout.addRow(startDate);
+        contractLayout.addEmptyRows(2);
+        contractLayout.addRow(endDate);
+        contractLayout.addEmptyRows(2);
+        contractLayout.addRow(new ArrayList<>(Arrays.asList(updateSelectedContract, cancelSelectedContract)), new ArrayList<>(Arrays.asList(1, 4, 1, 1, 4, 1)));
+        MetroAccordion editSelectedContractAccordion = new MetroAccordion();
+        editSelectedContractAccordion.addFrame("Edit Selected Contract", contractLayout, "pencil");
+        HashMap<String, String> selectedParameters = new HashMap<>();
+        selectedParameters.put("html", editSelectedContractAccordion.toString());
+        return Utilities.convertHashMapToJSON(selectedParameters);
     }
 }

@@ -96,64 +96,35 @@ public class DashboardPage
     }
     public JSONString viewPricesInBarChartFormat(String commodityTitle)
     {
-
         HashMap<String, String> parameters = new HashMap<>();
         MetroAccordion viewPricesInBarChartFormatAccordion = new MetroAccordion();
         MetroLayout barChartLayout = new MetroLayout();
-        //barChartLayout.addRow(new MetroCanvas("barChart", "500", "500"));
         LinkedHashMap<String, CommodityPrices> commodityPrices = aDashboard.getCommodityPrices();
         CommodityPrices currentCommodityPrices = commodityPrices.get(commodityTitle);
-        ArrayList<String> currentCommodityPricesHeadings = currentCommodityPrices.getHeadings();
-        ArrayList<ArrayList<String>> tableRows = aDashboard.getListOfCommodityPricesForSelectedCommodity(currentCommodityPrices, false);
-        LinkedHashMap<String, ArrayList<String>> prices = currentCommodityPrices.getPrices();
         List<String> chartTitles = aDashboard.getMonths(currentCommodityPrices);
         List<Double> chartValues = aDashboard.getLastPrices(currentCommodityPrices);
-        System.out.println("CHART TITLES");
-        for(String aChartTitle : chartTitles)
-            System.out.println("A CHART TITLE: " + aChartTitle);
-        for(Double aChartValue : chartValues)
-            System.out.println("A CHART VALUE: " + aChartValue);
         LinkedHashMap<String, List<Double>> lastPrices = new LinkedHashMap<>();
         lastPrices.put("Spot Prices", chartValues);
-
-        /*ArrayList<String> currentTableTitles = new ArrayList<>();
-        ArrayList<ArrayList<Double>> currentTablePrices = new ArrayList<>();
-        ArrayList<Double> lastTablePrices = new ArrayList<>();
-        for(ArrayList<String> aTableRow : tableRows)
-        {
-            currentTableTitles.add(aTableRow.get(0));
-            lastTablePrices.add(Double.parseDouble(aTableRow.get(1)));
-        }
-        currentTablePrices.add(lastTablePrices);*/
-
-        //ArrayList<String> currentCommodityMonths = currentCommodityPrices.getMonths();
-        //ArrayList<String> currentCommodityLastPrices = currentCommodityPrices.getLastPrices();
-        //System.out.println("CURRENT COMMODITY MONTHS");
-        //for(int counter = 0; counter < currentCommodityMonths.size(); counter++)
-            //System.out.println("CURRENT COMMODITY MONTH: " + currentCommodityMonths.get(counter));
-        //for(String aCurrentCommodityMonth : currentCommodityMonths)
-            //System.out.println("CURRENT COMMODITY MONTH: " + aCurrentCommodityMonth);
-        //System.out.println("CURRENT COMMODITY LAST PRICES");
-        //for(int counter = 0; counter < currentCommodityLastPrices.size(); counter++)
-            //System.out.println("CURRENT COMMODITY LAST PRICE: " + currentCommodityLastPrices.get(counter));
-        //for(String aCurrentCommodityLastPrice : currentCommodityLastPrices)
-            //System.out.println("CURRENT COMMODITY LAST PRICE: " + aCurrentCommodityLastPrice);
-        MetroChart aChart = new MetroChart("barChart", chartTitles, lastPrices);
-        barChartLayout.addRow(aChart);
+        barChartLayout.addRow(new MetroChart("chart"));
         viewPricesInBarChartFormatAccordion.addFrame("Bar Chart Format", barChartLayout, "chart-bars");
         parameters.put("html", viewPricesInBarChartFormatAccordion.toString());
-        //parameters.put("javascript", aChart.getScriptContent());
-        System.out.println("ABOUT TO RETURN HTML AND JAVASCRIPT");
-        //return Utilities.convertHashMapToJSON(parameters);
-        System.out.println("FORMATTED JSON");
-        System.out.println(Utilities.createChart(parameters, new ArrayList<>(Arrays.asList("M", "T", "W", "T", "F", "S", "S")), new LinkedHashMap<>()).getValue());
-        return Utilities.createChart(parameters, new ArrayList<>(Arrays.asList("M", "T", "W", "T", "F", "S", "S")), new LinkedHashMap<>());
+        return Utilities.createChart(parameters, chartTitles, lastPrices);
     }
     public JSONString viewPricesInLineChartFormat(String commodityTitle)
     {
         HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("html", "");
-        return Utilities.convertHashMapToJSON(parameters);
+        MetroAccordion viewPricesInLineChartFormatAccordion = new MetroAccordion();
+        MetroLayout lineChartLayout = new MetroLayout();
+        LinkedHashMap<String, CommodityPrices> commodityPrices = aDashboard.getCommodityPrices();
+        CommodityPrices currentCommodityPrices = commodityPrices.get(commodityTitle);
+        List<String> chartTitles = aDashboard.getMonths(currentCommodityPrices);
+        List<Double> chartValues = aDashboard.getLastPrices(currentCommodityPrices);
+        LinkedHashMap<String, List<Double>> lastPrices = new LinkedHashMap<>();
+        lastPrices.put("Spot Prices", chartValues);
+        lineChartLayout.addRow(new MetroChart("chart"));
+        viewPricesInLineChartFormatAccordion.addFrame("Line Chart Format", lineChartLayout, "chart-line");
+        parameters.put("html", viewPricesInLineChartFormatAccordion.toString());
+        return Utilities.createChart(parameters, chartTitles, lastPrices);
     }
     public JSONString generatePDFFile()
     {

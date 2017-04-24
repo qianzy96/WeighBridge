@@ -335,6 +335,81 @@ function printPDFFileForCommodityPrices()
     var formattedOutput = Dashboard.printPDFFile();
     document.getElementById('dashboardUpdatePanel').innerHTML = formattedOutput['html'];
 }
+function createNewsPage()
+{
+    var formattedOutput = News.createNewsPage();
+    document.getElementById('mainUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function getMainMenuForNewsPage()
+{
+    var formattedOutput = News.getMainMenuForNewsPage();
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function getArticlesAsTable()
+{
+    var formattedOutput = News.getArticlesAsTable();
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function getArticlesAsTiles()
+{
+    var formattedOutput = News.getArticlesAsTiles();
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function retrieveLatestArticles()
+{
+    var formattedOutput = News.retrieveLatestArticles();
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function getDetailedDescriptionForArticle(articleNumber)
+{
+    var formattedOutput = News.getDetailedDescriptionForArticle(articleNumber);
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function generateNewsPDFFile()
+{
+    var formattedOutput = News.generateNewsPDFFile();
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function printNewsPDFFile()
+{
+    var formattedOutput = News.printNewsPDFFile();
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function emailNewsPDFFile()
+{
+    var formattedOutput = News.emailNewsPDFFile();
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function emailNewsPDFFileConfirmation()
+{
+    var formattedOutput = News.emailNewsPDFFileConfirmation();
+    document.getElementById('emailAddressUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function deleteAnArticle()
+{
+    var formattedOutput = News.deleteAnArticle();
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function deleteSelectedArticle(articleIdentifier)
+{
+    var formattedOutput = News.deleteSelectedArticle(articleIdentifier);
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function deleteSelectedArticleConfirmation(articleIdentifier)
+{
+    var formattedOutput = News.deleteSelectedArticleConfirmation(articleIdentifier);
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function getBookmarkedArticles()
+{
+    var formattedOutput = News.getBookmarkedArticles();
+    document.getElementById('newsPageUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function bookmarkSelectedArticle(articleIdentifier)
+{
+    var formattedOutput = News.bookmarkSelectedArticle(articleIdentifier);
+    document.getElementById('bookmarkUpdatePanel').innerHTML = formattedOutput['html'];
+}
 function createMessagePage()
 {
     var formattedOutput = Message.createMessagePage();
@@ -393,56 +468,34 @@ function viewPricesInTabularFormat(commodityIdentifier)
 }
 function viewPricesInBarChartFormat(commodityIdentifier)
 {
-    alert('VIEW PRICES IN BAR CHART FORMAT');
     var formattedOutput = Dashboard.viewPricesInBarChartFormat(commodityIdentifier);
-    alert('FORMATTED OUTPUT: ' + formattedOutput['barChart']['labels']);
-
     document.getElementById('dashboardUpdatePanel').innerHTML = formattedOutput['html'];
-    //if(formattedOutput['javascript'])
-        //addFunctionToPage(formattedOutput['javascript']);
-    //createBarChart();
-    //createBarChartDynamically();
-    alert('BEFORE CALLING CREATE BAR CHART FROM FILE');
-    alert('EXISTING BAR CHART' + document.getElementById('barChart'));
-    createBarChart('barChart', formattedOutput['barChart']['labels']);
+    createChart('bar', 'chart', formattedOutput['chart']['labels'], formattedOutput['chart']['data']);
 }
-function addFunctionToPage(functionContent)
+/*function addFunctionToPage(functionContent)
 {
     var newFunction = document.createElement('script');
     newFunction.text = functionContent;
     document.body.appendChild(newFunction);
-}
-function createBarChart(chartID, chartLabels)
+}*/
+function createChart(chartType, chartID, chartLabels, chartData)
 {
-    alert('CREATE BAR CHART FROM FILE');
-    var barChart = document.getElementById(chartID);
-    var ctx = document.getElementById(chartID).getContext('2d');
-    alert('BAR CHART OBJECT: ' + ctx);
-    var myChart = new Chart(ctx,
+    var chartControl = document.getElementById(chartID).getContext('2d');
+    var myChart = new Chart(chartControl,
     {
-        type: 'line',
+        type: chartType,
         data:
         {
             labels: chartLabels,
-            datasets:
-            [{
-                label: 'apples',
-                data: [12, 19, 3, 17, 6, 3, 7],
-                backgroundColor: "rgba(153, 255, 51, 0.4)"
-            },
-            {
-                label: 'oranges',
-                data: [2, 29, 5, 5, 2, 3, 10],
-                backgroundColor: "rgba(255, 153, 0, 0.4)"
-            }]
+            datasets: chartData
         }
     });
-    alert('BAR CHART: ' + myChart);
 }
 function viewPricesInLineChartFormat(commodityIdentifier)
 {
     var formattedOutput = Dashboard.viewPricesInLineChartFormat(commodityIdentifier);
     document.getElementById('dashboardUpdatePanel').innerHTML = formattedOutput['html'];
+    createChart('line', 'chart', formattedOutput['chart']['labels'], formattedOutput['chart']['data']);
 }
 function getAdministrationMainMenu()
 {
@@ -528,6 +581,77 @@ function saveSerialPortSettings()
     var formattedOutput = Administration.saveSerialPortSettings(portName, baudRate, dataBits, stopBits, parity);
     document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
 }
+function viewContracts()
+{
+    var formattedOutput = Administration.viewContracts();
+    document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
+}
+function deleteContracts()
+{
+    var formattedOutput = Administration.deleteContracts();
+    document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
+}
+function deleteSelectedContract(contractID)
+{
+    var formattedOutput = Administration.deleteSelectedContract(contractID);
+    document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
+}
+function deleteSelectedContractConfirmation(contractID)
+{
+    var formattedOutput = Administration.deleteSelectedContractConfirmation(contractID);
+    document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
+}
+function addContract()
+{
+    var formattedOutput = Administration.addContract();
+    document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
+}
+function saveNewContract()
+{
+    var commoditiesDropDown = getSelectedItemFromDropDown(0);
+    var price = document.getElementById('price').value;
+    var total = document.getElementById('total').value;
+    var docketTypesDropDown = getSelectedItemFromDropDown(1);
+    var consigneesDropDown = getSelectedItemFromDropDown(2);
+    var startDate = document.getElementById('startDate').value;
+    var endDate = document.getElementById('endDate').value;
+    var formattedOutput = Administration.saveNewContract(commoditiesDropDown, price, total, docketTypesDropDown, consigneesDropDown, startDate, endDate);
+    if(formattedOutput['html'])
+        document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
+    if(formattedOutput['response'] === 'error')
+        displayErrorNotification(formattedOutput['title'], formattedOutput['content']);
+}
+function editContracts()
+{
+    var formattedOutput = Administration.editContracts();
+    document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
+}
+function editSelectedContract(contractID)
+{
+    var formattedOutput = Administration.editSelectedContract(contractID);
+    document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
+}
+function pdfForSelectedContract()
+{
+    var formattedOutput = Administration.pdfForSelectedContract();
+    document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
+}
+function generatePDFForSelectedContract(contractID)
+{
+    var formattedOutput = Administration.generatePDFForSelectedContract(contractID);
+    document.getElementById('administrationPanel').innerHTML = formattedOutput['html'];
+}
+function emailPDFForSelectedContract(contractID)
+{
+    var formattedOutput = Administration.emailPDFForSelectedContract(contractID);
+    document.getElementById('generatePDFForSelectedContractUpdatePanel').innerHTML = formattedOutput['html'];
+}
+function emailPDFConfirmation(contractID)
+{
+    var emailAddress = document.getElementById('emailAddress').value;
+    var formattedOutput = Administration.emailPDFConfirmation(contractID, emailAddress);
+    document.getElementById('generatePDFForSelectedContractUpdatePanel').innerHTML = formattedOutput['html'];
+}
 function clearPanel(id)
 {
     document.getElementById(id).innerHTML = "";
@@ -541,7 +665,6 @@ function formatValue(value)
 function createFluentMenu(selectedItem)
 {
     var formattedOutput = Administration.createFluentMenu(selectedItem);
-    alert('FORMATTED OUTPUT: ' + formattedOutput['html']);
     document.getElementById('administrationFluentMenuUpdatePanel').innerHTML = formattedOutput['html'];
 }
 //function displayPanel(selectedItem)
@@ -597,4 +720,12 @@ function createBarChartDynamically()
                         [{  label: 'Spot Prices',
                             data: [147.0, 148.4, 138.0, 139.75, 142.05, 143.05, 145.0, 140.75, 142.3, 143.85]}]}});
     alert('BAR CHART: ' + myChart);
+}
+function displayErrorNotification(title, description)
+{
+    $.Notify({caption: title, content: description, icon: "<span class='mif-cross'></span>", type: 'alert'});
+}
+function displaySuccessNotification(title, description)
+{
+    $.Notify({caption: title, content: description, icon: "<span class='mif-checkmark'></span>", type: 'success'});
 }

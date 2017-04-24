@@ -36,6 +36,7 @@ public class PortalPage
         MetroTile calculatorTile = new MetroTile("getCalculatorPage();", "cyan", "Calculator", "calculator2", "");
         MetroTile pricesTile = new MetroTile("createDashboardPage();", "cyan", "Prices", "eur", "");
         MetroTile messagesTile = new MetroTile("createMessagePage();", "cyan", "Messages", "mail-read", "");
+        MetroTile newsTile = new MetroTile("createNewsPage();", "cyan", "News", "feed3", "");
         MetroTile editProfileTile = new MetroTile("getEditUserSettingsPage();", "cyan", "Edit Profile", "pencil", "");
         MetroTile logOutTile = new MetroTile("loadHTML5Edition();", "cyan", "Log Out", "exit", "");
         portalLayout.addRow(portalHeading);
@@ -44,7 +45,7 @@ public class PortalPage
         portalLayout.addEmptyRows(2);
         portalLayout.addRow(new ArrayList<>(Arrays.asList(messagesTile, editProfileTile)), new ArrayList<>(Arrays.asList(1, 4, 1, 1, 4, 1)));
         portalLayout.addEmptyRows(2);
-        portalLayout.addRow(new ArrayList<>(Arrays.asList(logOutTile)), new ArrayList<>(Arrays.asList(1, 4, 1)));
+        portalLayout.addRow(new ArrayList<>(Arrays.asList(newsTile, logOutTile)), new ArrayList<>(Arrays.asList(1, 4, 1, 1, 4, 1)));
         portalAccordion.addFrame("Portal For " + user.getUsername(), portalLayout, "home");
         return portalAccordion;
     }

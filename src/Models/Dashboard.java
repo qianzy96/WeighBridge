@@ -65,7 +65,7 @@ public class Dashboard extends Components
             String webPage = noggersPage.getText();
             String desiredContent = webPage.substring(webPage.indexOf("<!--document.write(unescape('") + 29);
             String formattedResult = URLDecoder.decode(desiredContent.substring(0, desiredContent.length() - 32), "UTF-8");
-            ArrayList<String> links = Utilities.extractAttributeOfTags(formattedResult, "<iframe src=\".*?\".*?></iframe>", "src");
+            ArrayList<String> links = Utilities.extractAttributeOfTags(formattedResult, "<iframe src=\".*?\".*?></iframe>", "src", new HashMap<>());
             if (links.size() > 5)
                 for (int index = 0; index < 5; index++)
                     links.remove(links.size() - 1);

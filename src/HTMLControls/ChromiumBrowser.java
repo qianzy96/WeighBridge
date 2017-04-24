@@ -50,6 +50,7 @@ public class ChromiumBrowser
                     value.asObject().setProperty("Calculator", new CalculatorPage());
                     value.asObject().setProperty("Dashboard", new DashboardPage());
                     value.asObject().setProperty("Message", new MessagePage());
+                    value.asObject().setProperty("News", new NewsPage());
                 }
             }
 
@@ -69,8 +70,12 @@ public class ChromiumBrowser
             }
         });
     }
-    public BrowserView getBrowser()
+    public BrowserView getBrowserView()
     {
         return aBrowserView;
+    }
+    public Browser getBrowser()
+    {
+        return aBrowser;
     }
 }

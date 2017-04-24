@@ -89,7 +89,7 @@ public class Utilities
         }
         return validMatches;
     }
-    public static ArrayList<String> extractAttributeOfTags(String text, String pattern, String attribute)
+    public static ArrayList<String> extractAttributeOfTags(String text, String pattern, String attribute, HashMap<String, String> selectedAttributes)
     {
         Pattern aPattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
         Matcher aMatcher = aPattern.matcher(text);
@@ -97,9 +97,19 @@ public class Utilities
         while(aMatcher.find())
         {
             String currentTag = aMatcher.group();
-            currentTag = currentTag.substring(currentTag.indexOf(attribute) + attribute.length() + 2);
-            currentTag = currentTag.substring(0, currentTag.indexOf("\""));
-            attributes.add(currentTag);
+            Boolean invalidEntryLocated = false;
+            for(Map.Entry<String, String> aSelectedAttribute : selectedAttributes.entrySet())
+                if(!currentTag.contains(aSelectedAttribute.getKey()) || !currentTag.contains(aSelectedAttribute.getValue()))
+                    invalidEntryLocated = true;
+            if(currentTag.contains(attribute) && !invalidEntryLocated)
+            {
+                currentTag = currentTag.substring(currentTag.indexOf(attribute) + attribute.length() + 2);
+                if(currentTag.indexOf("\"") > -1)
+                    currentTag = currentTag.substring(0, currentTag.indexOf("\""));
+                else if(currentTag.indexOf("\'") > -1)
+                    currentTag = currentTag.substring(0, currentTag.indexOf("\'"));
+                attributes.add(currentTag);
+            }
         }
         return attributes;
     }
@@ -136,15 +146,15 @@ public class Utilities
             formattedOutput.append(" : ");
             formattedOutput.append("\"" + anEntry.getValue().replace("\"", "\\\"") + "\", ");
         }
-        formattedOutput.append("\"barChart\"");
-        formattedOutput.append(" : ");
-        formattedOutput.append("{\"labels\" : " + convertListToJSONArray(labels).getValue() + "}");
-        formattedOutput.append("{\"data\" : [");
+        formattedOutput.append("\"chart\"");
+        formattedOutput.append(" : {");
+        formattedOutput.append("\"labels\" : " + convertListToJSONArray(labels).getValue() + ", ");
+        formattedOutput.append("\"data\" : [");
         for(Map.Entry<String, List<Double>> aDataItem : data.entrySet())
         {
             formattedOutput.append("{");
-            formattedOutput.append("label: \'" + aDataItem.getKey() + "\',");
-            formattedOutput.append("data: [");
+            formattedOutput.append("\"label\": \"" + aDataItem.getKey() + "\",");
+            formattedOutput.append("\"data\": [");
             for(Double aDoubleValue : aDataItem.getValue())
                 formattedOutput.append(aDoubleValue + ", ");
             if(aDataItem.getValue().size() > 0)
@@ -152,21 +162,7 @@ public class Utilities
             formattedOutput.append("]");
             formattedOutput.append("},");
         }
-        /*
-        datasets:
-            [{
-                label: 'apples',
-                data: [12, 19, 3, 17, 6, 3, 7],
-                backgroundColor: "rgba(153, 255, 51, 0.4)"
-            },
-            {
-                label: 'oranges',
-                data: [2, 29, 5, 5, 2, 3, 10],
-                backgroundColor: "rgba(255, 153, 0, 0.4)"
-            }]
-        */
-        formattedOutput.append("}");
-        return new JSONString(formattedOutput.toString());
+        return new JSONString(formattedOutput.toString().substring(0, formattedOutput.length() - 1) + "]}}");
     }
     public static JSONString convertListToJSONArray(List<String> aList)
     {

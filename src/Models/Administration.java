@@ -546,6 +546,20 @@ public class Administration
         });
         return contracts;
     }
+    public ArrayList<String> getContractAsList(String contractIdentifier)
+    {
+        Contract currentContract = getContract(contractIdentifier);
+        ArrayList<String> currentContractAsList = new ArrayList<>();
+        currentContractAsList.add(currentContract.getCode() + "");
+        currentContractAsList.add(currentContract.getCommodity().getTitle());
+        currentContractAsList.add(currentContract.getPrice() + "");
+        currentContractAsList.add(currentContract.getTotal() + "");
+        currentContractAsList.add(currentContract.getDocketType().getDocketType());
+        currentContractAsList.add(currentContract.getConsignee().getFirstName() + " " + currentContract.getConsignee().getLastName());
+        currentContractAsList.add(currentContract.getStartDate().toString());
+        currentContractAsList.add(currentContract.getEndDate().toString());
+        return currentContractAsList;
+    }
     public Contract getContract(String contractIdentifier)
     {
         HashMap<String, String> selectedParameters = new HashMap<>();
@@ -819,7 +833,7 @@ public class Administration
         selectedConsignees.forEach(x -> consigneesValues.add(x.getFirstName() + " " + x.getLastName()));
         return consigneesValues;
     }
-    public void generateContractReport(String contractIdentifier)
+    public String generateContractReport(String contractIdentifier)
     {
         Contract aContract = getContract(contractIdentifier);
         Report aReport = new Report("contracts/" + aContract.getCode() + ".pdf");
@@ -830,6 +844,7 @@ public class Administration
         "Start Date: " + new SimpleDateFormat("yyyy-MM-dd").format(aContract.getStartDate()),
         "End Date: " + new SimpleDateFormat("yyyy-MM-dd").format(aContract.getEndDate())));
         aReport.addContent(reportContent);
+        return "file:///"  + System.getProperty("user.dir").replace("\\", "/") + "/contracts/" + contractIdentifier + ".pdf";
     }
     public void printContractReport(String contractIdentifier)
     {
@@ -837,14 +852,14 @@ public class Administration
             generateContractReport(contractIdentifier);
         new Printer("contracts/" + contractIdentifier + ".pdf");
     }
-    public void emailContractReport(String emailAddress, String contractIdentifier)
+    public Boolean emailContractReport(String emailAddress, String contractIdentifier)
     {
         if(!new File("contracts/" + contractIdentifier + ".pdf").exists())
             generateContractReport(contractIdentifier);
         Email anEmail = new Email();
-        anEmail.sendMessage(emailAddress, "Contract " + contractIdentifier,
-                "Dear Sir/Madam\n\nPlease find attached the contract for " + contractIdentifier + ".\n\nYours sincerely,\nS Cullinan",
-                "contracts/" + contractIdentifier + ".pdf", contractIdentifier + ".pdf");
+        return anEmail.sendMessage(emailAddress, "Contract " + contractIdentifier,
+        "Dear Sir/Madam\n\nPlease find attached the contract for " + contractIdentifier + ".\n\nYours sincerely,\nS Cullinan",
+        "contracts/" + contractIdentifier + ".pdf", contractIdentifier + ".pdf");
     }
     public void generateReport(String secondWeightIdentifier)
     {

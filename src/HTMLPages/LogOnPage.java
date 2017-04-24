@@ -43,14 +43,10 @@ public class LogOnPage
     }
     public JSONString createLogOnPage()
     {
-        System.out.println("CREATE LOG ON PAGE METHOD CALLED");
         MetroAccordion logOnAccordion = new MetroAccordion();
         MetroLayout logOnLayout = new MetroLayout();
-        System.out.println("LOG ON LAYOUT SUCCESSFULLY CREATED");
         MetroTextField username = new MetroTextField("Please enter your username", "user", "text", "username");
-        System.out.println("USERNAME TEXTFIELD SUCCESSFULLY CREATED");
         MetroTextField password = new MetroTextField("Please enter your password", "security", "password", "password");
-        System.out.println("PASSWORD TEXTFIELD SUCCESSFULLY CREATED");
         MetroCommandButton logOnButton = new MetroCommandButton("Log On", "Log On To The Portal", "enter",
         "processUserLogOn();", "success");
         MetroCommandButton cancelButton = new MetroCommandButton("Cancel", "Return To Home Page", "exit",
@@ -63,10 +59,7 @@ public class LogOnPage
         logOnLayout.addRow(new ArrayList<>(Arrays.asList(logOnButton, cancelButton)), new ArrayList<>(Arrays.asList(1, 4, 1, 1, 4, 1)));
         logOnAccordion.addFrame("Log On", logOnLayout, "enter");
         HashMap<String, String> selectedParameters = new HashMap<>();
-        System.out.println("SOURCE HTML");
         selectedParameters.put("html", logOnAccordion.toString());
-        System.out.println(logOnAccordion.toString());
-        System.out.println("SOURCE JSON: " + Utilities.convertHashMapToJSON(selectedParameters));
         return Utilities.convertHashMapToJSON(selectedParameters);
     }
 }

@@ -326,12 +326,9 @@ public class WeighBridgePage
         "loadHTML5Edition();", "danger");
         MetroHeading secondWeighingHeading = new MetroHeading("Second Weighing", "");
         ArrayList<ArrayList<String>> availableDockets = aWeighBridge.getDocketsAwaitingSecondWeightment();
-        List<MetroTile> secondWeighingTiles = new ArrayList<>();
+        List<MetroComponent> secondWeighingTiles = new ArrayList<>();
         for(ArrayList<String> anAvailableDocket : availableDockets)
         {
-            System.out.println("AN AVAILABLE DOCKET");
-            for(String aDocketComponent: anAvailableDocket)
-                System.out.println("DOCKET COMPONENT: " + aDocketComponent);
             aWeighBridge.retrieveParametersForSelectedSecondWeight(anAvailableDocket.get(1), anAvailableDocket.get(2), anAvailableDocket.get(5), anAvailableDocket.get(6));
             secondWeighingTiles.add(new MetroTile("", "cyan", aWeighBridge.getCaptionTitle(), "truck", ""));
         }
@@ -339,6 +336,7 @@ public class WeighBridgePage
         secondWeighingLayout.addEmptyRows(2);
         secondWeighingLayout.addRow(new ArrayList<>(Arrays.asList(backButton, secondWeighingHeading)), new ArrayList<>(Arrays.asList(1, 4, 1, 0, 6, 0)));
         secondWeighingLayout.addEmptyRows(2);
+        secondWeighingLayout.addMultipleRows(secondWeighingTiles, 3, 1, 3, 0, 2);
         secondWeighingAccordion.addFrame("Second Weighing", secondWeighingLayout, "truck");
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("html", secondWeighingAccordion.toString());
